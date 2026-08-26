@@ -1,4 +1,83 @@
-export const stories = [
+export type NavigationItem = {
+  label: string;
+  id: string;
+};
+
+export type StoryType = "performance" | "architecture" | "realtime" | "migration";
+
+export type EngineeringStory = {
+  number: string;
+  tag: string;
+  title: string;
+  summary: string;
+  challenge: string;
+  approach: string;
+  decisions: string[];
+  outcome: string;
+  type: StoryType;
+};
+
+export type Principle = {
+  number: string;
+  label: string;
+};
+
+export type ToolboxGroup = {
+  name: string;
+  tools: string;
+};
+
+export type Exploration = {
+  number: string;
+  title: string;
+  description: string;
+};
+
+export const navigation: NavigationItem[] = [
+  { label: "Work", id: "work" },
+  { label: "Thinking", id: "thinking" },
+  { label: "Journey", id: "journey" },
+  { label: "Toolbox", id: "toolbox" },
+  { label: "Now", id: "now" },
+  { label: "Contact", id: "contact" }
+];
+
+export const systemSteps = ["Complex problem", "Engineering thinking", "Simple outcome"];
+
+export const mindsetPrinciples: Principle[] = [
+  { number: "01", label: "Understand before changing" },
+  { number: "02", label: "Find the real bottleneck" },
+  { number: "03", label: "Simplify complexity" },
+  { number: "04", label: "Design for change" },
+  { number: "05", label: "Validate the outcome" }
+];
+
+export const engineeringPrinciples = [
+  "Performance is part of the product.",
+  "Measure before optimizing.",
+  "Good abstractions reduce complexity.",
+  "AI can accelerate development, but judgment still matters."
+];
+
+export const explorations: Exploration[] = [
+  {
+    number: "01",
+    title: "Backend systems",
+    description: "Going deeper into APIs, data, server-side architecture and how complete systems work."
+  },
+  {
+    number: "02",
+    title: "AI-powered applications",
+    description: "Exploring LLM APIs, streaming, structured outputs and useful AI workflows."
+  },
+  {
+    number: "03",
+    title: "Modern engineering",
+    description: "Learning how architecture and development practices evolve as applications become more intelligent."
+  }
+];
+
+export const stories: EngineeringStory[] = [
   {
     number: "01",
     tag: "Scale / performance",
@@ -45,10 +124,10 @@ export const stories = [
   }
 ];
 
-export const toolbox = [
-  ["Interfaces & products", "React · Next.js · TypeScript · JavaScript · Angular · HTML · CSS"],
-  ["Architecture & design", "Component systems · State management · Modular architecture · Performance"],
-  ["Systems & integration", "REST APIs · GraphQL · WebSockets · Node.js · Python · Flask"],
-  ["AI & modern apps", "LLM APIs · Streaming · Structured outputs · Function calling"],
-  ["Quality & delivery", "Playwright · Selenium · Accessibility · CI/CD · Docker · AWS"]
+export const toolbox: ToolboxGroup[] = [
+  { name: "Interfaces & products", tools: "React · Next.js · TypeScript · JavaScript · Angular · HTML · CSS" },
+  { name: "Architecture & design", tools: "Component systems · State management · Modular architecture · Performance" },
+  { name: "Systems & integration", tools: "REST APIs · GraphQL · WebSockets · Node.js · Python · Flask" },
+  { name: "AI & modern apps", tools: "LLM APIs · Streaming · Structured outputs · Function calling" },
+  { name: "Quality & delivery", tools: "Playwright · Selenium · Accessibility · CI/CD · Docker · AWS" }
 ];
