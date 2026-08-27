@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m, useReducedMotion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import type { EngineeringStory, Exploration, ToolboxGroup } from "@/lib/content";
 
@@ -17,18 +17,20 @@ const flowLabels: Record<EngineeringStory["type"], string[]> = {
 };
 
 export function Section({ id, eyebrow, title, children }: { id: string; eyebrow: string; title: string; children: React.ReactNode }) {
+  const reducedMotion = useReducedMotion();
   return (
-    <section id={id} className="relative mx-auto max-w-6xl scroll-mt-28 px-6 py-24 md:px-10 md:py-36">
-      <motion.div initial="hidden" whileInView="show" viewport={{ once: true, margin: "-100px" }} variants={fadeUp}>
+    <section id={id} aria-labelledby={`${id}-title`} className="relative mx-auto max-w-6xl scroll-mt-32 px-6 py-24 md:px-10 md:py-36">
+      <m.div initial={reducedMotion ? false : "hidden"} whileInView={reducedMotion ? undefined : "show"} viewport={{ once: true, margin: "-100px" }} variants={fadeUp}>
         <p className="eyebrow mb-5">{eyebrow}</p>
-        <h2 className="max-w-3xl font-display text-4xl font-medium tracking-[-.04em] text-white md:text-6xl">{title}</h2>
-      </motion.div>
+        <h2 id={`${id}-title`} className="max-w-3xl font-display text-4xl font-medium tracking-[-.04em] text-white md:text-6xl">{title}</h2>
+      </m.div>
       {children}
     </section>
   );
 }
 
 function FlowVisual({ type }: { type: EngineeringStory["type"] }) {
+  const reducedMotion = useReducedMotion();
   return (
     <div className="relative mt-10 overflow-hidden rounded-2xl border hairline bg-[#101218] p-5 md:p-8">
       <div className="absolute inset-0 grid-bg opacity-40" />
@@ -37,15 +39,16 @@ function FlowVisual({ type }: { type: EngineeringStory["type"] }) {
           <div key={label} className="flex min-w-0 flex-1 items-center gap-2 md:gap-5">
             <div className="relative flex h-14 w-full items-center justify-center rounded-xl border border-white/10 bg-white/[.035] px-1 text-center text-[10px] uppercase tracking-[.12em] text-slate-300 md:h-20 md:text-xs">
               {index === 2 && (
-                <motion.span
+                <m.span
+                  aria-hidden="true"
                   className="absolute inset-x-1/2 top-[-7px] h-1.5 w-1.5 rounded-full bg-lime shadow-[0_0_16px_#c8f36a]"
-                  animate={{ y: [0, 78, 0], opacity: [0, 1, 0] }}
-                  transition={{ duration: 2.8, repeat: Infinity, delay: index * 0.15 }}
+                  animate={reducedMotion ? undefined : { y: [0, 78, 0], opacity: [0, 1, 0] }}
+                  transition={reducedMotion ? { duration: 0 } : { duration: 2.8, repeat: Infinity, delay: index * 0.15 }}
                 />
               )}
               {label}
             </div>
-            {index < labels.length - 1 && <ArrowUpRight className="hidden h-4 w-4 shrink-0 text-electric/60 md:block" />}
+            {index < labels.length - 1 && <ArrowUpRight aria-hidden="true" className="hidden h-4 w-4 shrink-0 text-electric/60 md:block" />}
           </div>
         ))}
       </div>
@@ -76,10 +79,11 @@ export function WorkSection({ stories }: { stories: EngineeringStory[] }) {
 }
 
 export function ThinkingSection({ principles, engineeringPrinciples }: { principles: { number: string; label: string }[]; engineeringPrinciples: string[] }) {
+  const reducedMotion = useReducedMotion();
   return (
     <Section id="thinking" eyebrow="Engineering mindset" title="How I approach difficult problems.">
-      <div className="mt-16 grid gap-px overflow-hidden rounded-2xl border hairline bg-white/10 md:grid-cols-5">{principles.map(principle => <motion.div whileHover={{ backgroundColor: "rgba(139,167,255,.08)" }} key={principle.number} className="bg-[#101218] p-6 md:min-h-48"><span className="font-mono text-sm text-lime">{principle.number}</span><h3 className="mt-12 text-sm leading-6 text-slate-200">{principle.label}</h3></motion.div>)}</div>
-      <div className="mt-12 grid gap-5 md:grid-cols-2"><p className="text-lg leading-8 text-slate-300">The goal is not more code. The goal is a better solution.</p><div className="space-y-3 text-sm text-slate-400">{engineeringPrinciples.map(principle => <p key={principle} className="flex items-center gap-3 border-b hairline pb-3"><span className="text-lime">↳</span>{principle}</p>)}</div></div>
+      <div className="mt-16 grid gap-px overflow-hidden rounded-2xl border hairline bg-white/10 md:grid-cols-5">{principles.map(principle => <m.div whileHover={reducedMotion ? undefined : { backgroundColor: "rgba(139,167,255,.08)" }} key={principle.number} className="bg-[#101218] p-6 md:min-h-48"><span aria-hidden="true" className="font-mono text-sm text-lime">{principle.number}</span><h3 className="mt-12 text-sm leading-6 text-slate-200">{principle.label}</h3></m.div>)}</div>
+      <div className="mt-12 grid gap-5 md:grid-cols-2"><p className="text-lg leading-8 text-slate-300">The goal is not more code. The goal is a better solution.</p><div className="space-y-3 text-sm text-slate-400">{engineeringPrinciples.map(principle => <p key={principle} className="flex items-center gap-3 border-b hairline pb-3"><span aria-hidden="true" className="text-lime">↳</span>{principle}</p>)}</div></div>
     </Section>
   );
 }
