@@ -3,7 +3,7 @@ export type NavigationItem = {
   id: string;
 };
 
-export type StoryType = "performance" | "architecture" | "realtime" | "migration";
+export type StoryType = "performance" | "architecture" | "realtime" | "migration" | "ai";
 
 export type EngineeringStory = {
   number: string;
@@ -38,7 +38,7 @@ export type Experience = {
   areas: string[];
 };
 
-export type ProjectStatus = "building" | "live" | "experiment";
+export type ProjectStatus = "built" | "building" | "live" | "experiment";
 
 export type Project = {
   title: string;
@@ -49,10 +49,12 @@ export type Project = {
   engineeringProblem: string;
   decision: string;
   result: string;
+  whyBuilt?: string;
   architecture?: string[];
   technologies: string[];
   githubUrl?: string;
   liveUrl?: string;
+  imageUrl?: string;
   status: ProjectStatus;
   featured?: boolean;
 };
@@ -91,13 +93,13 @@ export const navigation: NavigationItem[] = [
   { label: "Thinking", id: "thinking" },
   { label: "Journey", id: "journey" },
   { label: "Toolbox", id: "toolbox" },
-  { label: "Notes", id: "notes" },
   { label: "Now", id: "now" },
   { label: "Contact", id: "contact" }
 ];
 
 export const systemSteps = ["Hard problem", "Useful trade-off", "Working outcome"];
-export const githubUrl = "https://github.com/SantoshThkr/Portfolio-ST";
+export const githubUrl = "https://github.com/SantoshThkr";
+export const resumeUrl = "/resume.pdf";
 export const linkedinUrl = "https://www.linkedin.com/in/ithakurr/";
 export const emailAddress = "santoshthakurxd@gmail.com";
 
@@ -172,18 +174,50 @@ export const experience: Experience[] = [
 
 export const projects: Project[] = [
   {
-    title: "AI Knowledge Workspace",
-    category: "Independent build",
-    description: "A planned knowledge workspace built around conversational AI and the product problems that come with it.",
-    problem: "Giving people a way to work with their knowledge while keeping context and control in the product.",
-    build: "A responsive workspace for conversations, history, prompt templates and structured AI interactions.",
-    engineeringProblem: "Making streaming, persistence, failures and changing AI output behave predictably.",
-    decision: "Keep the interface, application state and service boundary explicit so each part can change without hiding the trade-offs.",
-    result: "In progress. Repository and deployment links will be added once there is a working build.",
-    architecture: ["Responsive interface", "Conversation state", "Service boundary", "Persistence"],
-    technologies: ["React", "TypeScript", "LLM APIs", "Streaming"],
-    status: "experiment",
+    title: "InterviewForge",
+    category: "AI mock interview platform · InterviewPilot repository",
+    description: "An interview platform that uses a candidate's resume and target role to run adaptive mock interviews.",
+    problem: "Generic interview prep doesn't adapt to a candidate's actual resume, target role, or weak areas.",
+    build: "Resume analysis, role and difficulty selection, five interview modes, eight interviewer personalities, streaming conversations with follow-ups, voice interaction, a Monaco coding round with test execution, anti-cheating detection, interview history and adaptive performance reports.",
+    engineeringProblem: "TODO: describe the hardest part of keeping the multi-turn interview, streaming response flow and follow-up generation coherent.",
+    decision: "TODO: document the repository's most important architecture and tooling decisions.",
+    result: "Built. The public repository is available for review.",
+    whyBuilt: "I wanted to build interview practice around a candidate's actual background instead of a fixed question list.",
+    architecture: ["Resume analysis", "Streaming interview flow", "Coding round", "Reporting and history"],
+    technologies: ["Next.js", "TypeScript", "NestJS", "Prisma", "PostgreSQL", "OpenAI", "Clerk"],
+    githubUrl: "https://github.com/SantoshThkr/InterviewPilot",
+    status: "built",
     featured: true
+  },
+  {
+    title: "OpsAI",
+    category: "Independent build · Currently building",
+    description: "A document-to-retrieval system for uploading files, processing them in the background and searching them with RAG.",
+    problem: "Teams accumulate documents faster than anyone can search or reason over them; keyword search doesn't understand content.",
+    build: "A Next.js web app, FastAPI service and shared TypeScript contracts around document upload, PDF/TXT/Markdown processing, chunking, embeddings, owner-scoped retrieval, JWT authentication and viewer/analyst/admin RBAC.",
+    engineeringProblem: "TODO: describe the most interesting ingestion, worker, chunking or retrieval problem from the current build.",
+    decision: "TODO: document why the current PostgreSQL/pgvector, Redis and worker approach fits this build.",
+    result: "Currently building. Docker Compose, health endpoints and the document processing path are documented in the repository.",
+    whyBuilt: "I wanted to follow the document-to-retrieval path end to end, including the worker and data boundaries around it.",
+    architecture: ["Web / API boundary", "Document processing worker", "Chunking and embeddings", "pgvector retrieval", "RBAC"],
+    technologies: ["Next.js", "FastAPI", "PostgreSQL", "pgvector", "Redis", "SQLAlchemy", "Docker"],
+    githubUrl: "https://github.com/SantoshThkr/ops-ai",
+    status: "building",
+    featured: true
+  },
+  {
+    title: "MitraAI",
+    category: "Experiment · Earlier build",
+    description: "An earlier React and Vite experiment around an AI chat interface, themes, chat management and dashboard-style result views.",
+    problem: "Exploring how an AI chat product could organize conversations and present results in a usable interface.",
+    build: "A React/Vite interface with theme switching, chat management, dashboard and results components, and local-storage-related behavior.",
+    engineeringProblem: "TODO: add the part of this experiment that was most useful or technically interesting.",
+    decision: "TODO: add any implementation decision worth preserving from this earlier build.",
+    result: "Earlier build. The repository is available for reference.",
+    whyBuilt: "I used this as an earlier experiment to explore the interaction patterns around AI chat.",
+    technologies: ["React", "Vite", "JavaScript"],
+    githubUrl: "https://github.com/SantoshThkr/MitraAI",
+    status: "experiment"
   }
 ];
 

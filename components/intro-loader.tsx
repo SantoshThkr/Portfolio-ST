@@ -11,17 +11,32 @@ export function IntroLoader() {
   const reducedMotion = useReducedMotion() ?? false;
 
   useEffect(() => {
-    if (window.sessionStorage.getItem(INTRO_KEY)) {
-      setState("hidden");
+    let isCurrent = true;
+
+    try {
+      if (typeof window !== "undefined" && window.sessionStorage.getItem(INTRO_KEY)) {
+        setState("hidden");
+        return;
+      }
+
+      if (typeof window !== "undefined") {
+        window.sessionStorage.setItem(INTRO_KEY, "true");
+      }
+    } catch {
+      if (isCurrent) setState("hidden");
       return;
     }
 
-    window.sessionStorage.setItem(INTRO_KEY, "true");
     const exitDelay = reducedMotion ? 450 : 1800;
-    const exitTimer = window.setTimeout(() => setState("exiting"), exitDelay);
-    const hideTimer = window.setTimeout(() => setState("hidden"), exitDelay + (reducedMotion ? 150 : 650));
+    const exitTimer = window.setTimeout(() => {
+      if (isCurrent) setState("exiting");
+    }, exitDelay);
+    const hideTimer = window.setTimeout(() => {
+      if (isCurrent) setState("hidden");
+    }, exitDelay + (reducedMotion ? 150 : 650));
 
     return () => {
+      isCurrent = false;
       window.clearTimeout(exitTimer);
       window.clearTimeout(hideTimer);
     };
