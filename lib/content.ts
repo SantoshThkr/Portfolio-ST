@@ -88,6 +88,7 @@ export type Capability = {
 };
 
 export const navigation: NavigationItem[] = [
+  { label: "Capabilities", id: "capabilities" },
   { label: "Work", id: "work" },
   { label: "Builds", id: "builds" },
   { label: "Thinking", id: "thinking" },
@@ -99,7 +100,8 @@ export const navigation: NavigationItem[] = [
 
 export const systemSteps = ["Hard problem", "Useful trade-off", "Working outcome"];
 export const githubUrl = "https://github.com/SantoshThkr";
-export const resumeUrl = "/resume.pdf";
+export const resumeUrl = "/SantoshThakurResume.pdf";
+export const hasResume = true;
 export const linkedinUrl = "https://www.linkedin.com/in/ithakurr/";
 export const emailAddress = "santoshthakurxd@gmail.com";
 
@@ -178,9 +180,9 @@ export const projects: Project[] = [
     category: "AI mock interview platform · InterviewPilot repository",
     description: "An interview platform that uses a candidate's resume and target role to run adaptive mock interviews.",
     problem: "Generic interview prep doesn't adapt to a candidate's actual resume, target role, or weak areas.",
-    build: "Resume analysis, role and difficulty selection, five interview modes, eight interviewer personalities, streaming conversations with follow-ups, voice interaction, a Monaco coding round with test execution, anti-cheating detection, interview history and adaptive performance reports.",
-    engineeringProblem: "TODO: describe the hardest part of keeping the multi-turn interview, streaming response flow and follow-up generation coherent.",
-    decision: "TODO: document the repository's most important architecture and tooling decisions.",
+    build: "Resume analysis, role and difficulty selection, five interview modes, eight interviewer personalities, streaming conversations with follow-ups, voice interaction, a Monaco coding round with test execution, anti-cheating detection (focus-loss and copy-paste tracking), interview history and adaptive performance reports.",
+    engineeringProblem: "Keeping a multi-turn interview coherent while streaming responses and generating context-aware follow-up questions in real time — and running anti-cheat checks (focus loss, copy-paste detection) alongside that without interrupting the flow.",
+    decision: "Split the system into a Next.js frontend and a separate NestJS/Prisma backend so interview state, resume analysis and reporting could evolve independently of the UI. PostgreSQL persists sessions, transcripts and adaptive performance data; OpenAI handles question generation, follow-ups and evaluation.",
     result: "Built. The public repository is available for review.",
     whyBuilt: "I wanted to build interview practice around a candidate's actual background instead of a fixed question list.",
     architecture: ["Resume analysis", "Streaming interview flow", "Coding round", "Reporting and history"],
@@ -191,18 +193,18 @@ export const projects: Project[] = [
   },
   {
     title: "OpsAI",
-    category: "Independent build · Currently building",
+    category: "Independent build · Build",
     description: "A document-to-retrieval system for uploading files, processing them in the background and searching them with RAG.",
     problem: "Teams accumulate documents faster than anyone can search or reason over them; keyword search doesn't understand content.",
-    build: "A Next.js web app, FastAPI service and shared TypeScript contracts around document upload, PDF/TXT/Markdown processing, chunking, embeddings, owner-scoped retrieval, JWT authentication and viewer/analyst/admin RBAC.",
-    engineeringProblem: "TODO: describe the most interesting ingestion, worker, chunking or retrieval problem from the current build.",
-    decision: "TODO: document why the current PostgreSQL/pgvector, Redis and worker approach fits this build.",
-    result: "Currently building. Docker Compose, health endpoints and the document processing path are documented in the repository.",
-    whyBuilt: "I wanted to follow the document-to-retrieval path end to end, including the worker and data boundaries around it.",
-    architecture: ["Web / API boundary", "Document processing worker", "Chunking and embeddings", "pgvector retrieval", "RBAC"],
+    build: "A Next.js web app, FastAPI service and shared TypeScript contracts around document upload, PDF/TXT/Markdown processing, chunking, embeddings and owner-scoped retrieval. JWT authentication with viewer/analyst/admin RBAC gates access, and an authenticated MCP-style JSON-RPC adapter exposes typed, allowlisted tools behind approval gates, idempotent execution and audit logging — built to run locally against deterministic providers, so it doesn't require an OpenAI key to try.",
+    engineeringProblem: "Processing uploaded documents into chunked, embedded, owner-scoped retrieval without blocking the request, and building the approval-gated action layer around it — state-changing actions go through an approval gate and get written to an audit log before they run.",
+    decision: "PostgreSQL with pgvector keeps retrieval and relational data in one store instead of standing up a separate vector database. Redis backs the background worker queue and rate limiting. Actions are exposed through an MCP-style JSON-RPC adapter with idempotent execution, since an operations tool should be auditable and safe to retry, not just functional.",
+    result: "build. Docker Compose, health endpoints and the document processing path are documented in the repository.",
+    whyBuilt: "I wanted to follow the document-to-retrieval path end to end, including the worker, the approval-gated action layer and the data boundaries around it.",
+    architecture: ["Web / API boundary", "Document processing worker", "Chunking and embeddings", "pgvector retrieval", "RBAC", "MCP-style tool adapter", "Approval gates & audit log"],
     technologies: ["Next.js", "FastAPI", "PostgreSQL", "pgvector", "Redis", "SQLAlchemy", "Docker"],
     githubUrl: "https://github.com/SantoshThkr/ops-ai",
-    status: "building",
+    status: "built",
     featured: true
   },
   {
@@ -211,8 +213,8 @@ export const projects: Project[] = [
     description: "An earlier React and Vite experiment around an AI chat interface, themes, chat management and dashboard-style result views.",
     problem: "Exploring how an AI chat product could organize conversations and present results in a usable interface.",
     build: "A React/Vite interface with theme switching, chat management, dashboard and results components, and local-storage-related behavior.",
-    engineeringProblem: "TODO: add the part of this experiment that was most useful or technically interesting.",
-    decision: "TODO: add any implementation decision worth preserving from this earlier build.",
+    engineeringProblem: "A smaller, earlier build than InterviewPilot or OpsAI — working through chat state, theming and result display in a plain React/Vite app before taking on a full-stack build with its own backend.",
+    decision: "Kept deliberately simple: a React/Vite frontend calling the OpenAI API directly, with no separate backend. That scope matched what this project was exploring.",
     result: "Earlier build. The repository is available for reference.",
     whyBuilt: "I used this as an earlier experiment to explore the interaction patterns around AI chat.",
     technologies: ["React", "Vite", "JavaScript"],
@@ -249,7 +251,7 @@ export const engineeringNotes: EngineeringNote[] = [
 ];
 
 export const nowItems: NowItem[] = [
-  { category: "building", title: "Independent engineering builds", description: "Turning ideas like the AI Knowledge Workspace into small, testable product experiments." },
+  { category: "building", title: "Independent engineering builds", description: "Turning ideas like OpsAI into small, testable product experiments." },
   { category: "working-on", title: "Application services", description: "Working across APIs, data and service boundaries as part of building complete products." },
   { category: "interested-in", title: "AI product experiences", description: "Building applications around LLM APIs, streaming responses, structured outputs and useful workflows." },
   { category: "recently", title: "Performance and architecture", description: "Looking closely at the trade-offs that keep large applications fast and changeable." }
