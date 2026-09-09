@@ -3,7 +3,7 @@ export type NavigationItem = {
   id: string;
 };
 
-export type StoryType = "performance" | "architecture" | "realtime" | "migration" | "ai";
+export type StoryType = "performance" | "architecture" | "realtime" | "migration";
 
 export type EngineeringStory = {
   number: string;
@@ -59,16 +59,6 @@ export type Project = {
   featured?: boolean;
 };
 
-export type EngineeringNote = {
-  title: string;
-  date: string;
-  category: string;
-  summary: string;
-  readingTime: string;
-  articleUrl?: string;
-  status: "planned" | "published";
-};
-
 export type NowCategory = "building" | "working-on" | "interested-in" | "recently";
 
 export type NowItem = {
@@ -88,13 +78,11 @@ export type Capability = {
 };
 
 export const navigation: NavigationItem[] = [
-  { label: "Capabilities", id: "capabilities" },
-  { label: "Work", id: "work" },
   { label: "Builds", id: "builds" },
-  { label: "Thinking", id: "thinking" },
+  { label: "Work", id: "work" },
   { label: "Journey", id: "journey" },
+  { label: "Thinking", id: "thinking" },
   { label: "Toolbox", id: "toolbox" },
-  { label: "Now", id: "now" },
   { label: "Contact", id: "contact" }
 ];
 
@@ -176,7 +164,7 @@ export const experience: Experience[] = [
 
 export const projects: Project[] = [
   {
-    title: "InterviewForge",
+    title: "InterviewPilot",
     category: "AI mock interview platform · InterviewPilot repository",
     description: "An interview platform that uses a candidate's resume and target role to run adaptive mock interviews.",
     problem: "Generic interview prep doesn't adapt to a candidate's actual resume, target role, or weak areas.",
@@ -220,33 +208,6 @@ export const projects: Project[] = [
     technologies: ["React", "Vite", "JavaScript"],
     githubUrl: "https://github.com/SantoshThkr/MitraAI",
     status: "experiment"
-  }
-];
-
-export const engineeringNotes: EngineeringNote[] = [
-  {
-    title: "Tracking down performance problems in a high-traffic app",
-    date: "Planned",
-    category: "Performance",
-    summary: "Draft notes on finding the slow path, protecting the critical path and making performance improvements that users can feel.",
-    readingTime: "5 min read",
-    status: "planned"
-  },
-  {
-    title: "Where real-time UI gets difficult",
-    date: "Planned",
-    category: "Real-time systems",
-    summary: "Draft notes on ownership, ordering, reconnects and the state decisions behind continuously changing interfaces.",
-    readingTime: "6 min read",
-    status: "planned"
-  },
-  {
-    title: "When Micro Frontends actually help",
-    date: "Planned",
-    category: "Architecture",
-    summary: "Draft notes on team boundaries, independent delivery and the costs that come with splitting an application.",
-    readingTime: "7 min read",
-    status: "planned"
   }
 ];
 

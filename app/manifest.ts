@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Santosh Thakur — Software Engineer",
+    name: "Santosh Thakur — Full-Stack AI Engineer",
     short_name: "Santosh Thakur",
     description: "Software engineering portfolio of Santosh Thakur.",
     start_url: "/",

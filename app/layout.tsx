@@ -6,9 +6,9 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const space = Space_Grotesk({ subsets: ["latin"], variable: "--font-space" });
 
 const siteUrl = "https://santosht.dev";
-const title = "Santosh Thakur — Software Engineer";
+const title = "Santosh Thakur — Full-Stack AI Engineer";
 const description =
-  "Software engineer building scalable digital products, application services and practical AI-powered applications.";
+  "Full-stack AI engineer building product interfaces, application services and practical AI-powered workflows.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -46,7 +46,7 @@ const personSchema = {
   "@type": "Person",
   name: "Santosh Thakur",
   url: siteUrl,
-  jobTitle: "Software Engineer",
+  jobTitle: "Full-Stack AI Engineer",
   sameAs: [
     "https://github.com/SantoshThkr",
     "https://www.linkedin.com/in/ithakurr/",

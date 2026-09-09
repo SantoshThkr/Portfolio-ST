@@ -1,40 +1,29 @@
-"use client";
-
-import { m, useReducedMotion, useScroll, useSpring } from "framer-motion";
 import Image from "next/image";
-import { useRef } from "react";
 import { ArrowUpRight } from "lucide-react";
-import { currentFocus, emailAddress, githubUrl, linkedinUrl, systemLayers } from "@/lib/content";
-import type { Capability, EngineeringNote, EngineeringStory, Experience, NowItem, Project, ToolboxGroup } from "@/lib/content";
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 22 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] } }
-};
+import { currentFocus, emailAddress, githubUrl, linkedinUrl } from "@/lib/content";
+import type { Capability, EngineeringStory, Experience, NowItem, Project, ToolboxGroup } from "@/lib/content";
+import { ActionPipeline, ProjectPipeline, SystemMap, WorkflowVisual } from "./engineering-visuals";
 
 const flowLabels: Record<EngineeringStory["type"], string[]> = {
   performance: ["intent", "network", "render", "interaction", "outcome"],
   architecture: ["product", "complexity", "domains", "modules", "teams"],
   realtime: ["events", "services", "connection", "state", "interface"],
-  migration: ["existing", "dependencies", "slices", "validate", "stable"],
-  ai: ["prompt", "retrieval", "generation", "validation", "outcome"]
+  migration: ["existing", "dependencies", "slices", "validate", "stable"]
 };
 
 export function Section({ id, eyebrow, title, children }: { id: string; eyebrow: string; title: string; children: React.ReactNode }) {
-  const reducedMotion = useReducedMotion();
   return (
     <section id={id} aria-labelledby={`${id}-title`} className="relative mx-auto max-w-6xl scroll-mt-32 px-6 py-24 md:px-10 md:py-36">
-      <m.div initial={reducedMotion ? false : "hidden"} whileInView={reducedMotion ? undefined : "show"} viewport={{ once: true, margin: "-100px" }} variants={fadeUp}>
+      <div className="section-heading">
         <p className="eyebrow mb-5">{eyebrow}</p>
         <h2 id={`${id}-title`} className="max-w-3xl font-display text-4xl font-medium tracking-[-.04em] text-white md:text-6xl">{title}</h2>
-      </m.div>
+      </div>
       {children}
     </section>
   );
 }
 
 function FlowVisual({ type }: { type: EngineeringStory["type"] }) {
-  const reducedMotion = useReducedMotion();
   return (
     <div className="relative mt-10 overflow-hidden rounded-2xl border hairline bg-[#101218] p-5 md:p-8">
       <div className="absolute inset-0 grid-bg opacity-40" />
@@ -43,12 +32,9 @@ function FlowVisual({ type }: { type: EngineeringStory["type"] }) {
           <div key={label} className="flex min-w-0 flex-1 items-center gap-2 md:gap-5 last:col-span-2 md:last:col-span-1">
             <div className="relative flex h-14 w-full items-center justify-center break-words rounded-xl border border-white/10 bg-white/[.035] px-1 text-center text-[10px] uppercase tracking-[.12em] text-slate-300 md:h-20 md:text-xs">
               {index === 2 && (
-                <m.span
+                <span
                   aria-hidden="true"
                   className="absolute inset-x-1/2 top-[-7px] h-1.5 w-1.5 rounded-full bg-lime shadow-[0_0_16px_#c8f36a]"
-                  whileInView={reducedMotion ? undefined : { y: [0, 78, 0], opacity: [0, 1, 0] }}
-                  viewport={{ once: false, margin: "-100px" }}
-                  transition={reducedMotion ? { duration: 0 } : { duration: 2.8, repeat: Infinity, delay: index * 0.15 }}
                 />
               )}
               {label}
@@ -80,16 +66,36 @@ function StoryCard({ story }: { story: EngineeringStory }) {
 }
 
 export function WorkSection({ stories }: { stories: EngineeringStory[] }) {
-  return <Section id="work" eyebrow="Selected engineering stories" title="The hard part is making the right trade-off."><div className="mt-16">{stories.map(story => <StoryCard key={story.number} story={story} />)}</div></Section>;
+  return <Section id="work" eyebrow="Selected engineering stories" title="The hard part is making the right trade-off."><div className="mt-10 mb-12 max-w-3xl text-lg leading-8 text-slate-400">A few patterns I have worked through in production: finding the slow path, setting boundaries, keeping live state trustworthy, and modernizing without stopping delivery.</div><div className="mt-16">{stories.map(story => <StoryCard key={story.number} story={story} />)}</div></Section>;
 }
 
 export function CapabilitiesSection({ capabilities }: { capabilities: Capability[] }) {
-  return <Section id="capabilities" eyebrow="What I build" title="Products that have real constraints behind them."><div className="mt-16 grid gap-px overflow-hidden rounded-2xl border hairline bg-white/10 md:grid-cols-3">{capabilities.map((capability, index) => <article key={capability.title} className="bg-[#101218] p-6 transition-colors hover:bg-electric/[.06] md:min-h-48"><span aria-hidden="true" className="font-mono text-sm text-lime">0{index + 1}</span><h3 className="mt-10 font-display text-2xl text-white">{capability.title}</h3><p className="mt-4 text-sm leading-7 text-slate-400">{capability.description}</p></article>)}</div></Section>;
+  const groups = [
+    { title: "Product engineering", description: "Interfaces and shared foundations that stay useful as products and teams grow.", tags: capabilities.slice(0, 2).map(item => item.title), link: "InterviewPilot" },
+    { title: "Systems & APIs", description: "Service boundaries, integrations and data flows that connect a product to the systems behind it.", tags: [capabilities[3].title, "REST APIs", "GraphQL"], link: "OpsAI" },
+    { title: "Real-time & performance", description: "Keeping changing state predictable and moving work out of the critical path.", tags: [capabilities[2].title, capabilities[4].title], link: "Production work" },
+    { title: "AI applications", description: "Practical workflows around streaming, structured output, retrieval and evaluation.", tags: [capabilities[5].title, "Streaming", "RAG"], link: "InterviewPilot + OpsAI" }
+  ];
+  return <Section id="capabilities" eyebrow="What I build" title="From product surface to the systems behind it."><div className="capability-groups">{groups.map((group, index) => <article key={group.title} className="capability-group"><span className="card-number">0{index + 1}</span><h3>{group.title}</h3><p>{group.description}</p><div className="capability-tags">{group.tags.map(tag => <span key={tag}>{tag}</span>)}</div><small>Connected to {group.link}</small></article>)}</div></Section>;
 }
 
 function ProjectCard({ project }: { project: Project }) {
   const statusLabel = project.status === "built" ? "Built" : project.status === "building" ? "Currently building" : project.status === "live" ? "Live" : "Experiment";
-  return <article data-cursor="card" className={`rounded-2xl border hairline bg-[#101218] p-6 transition-colors hover:border-electric/40 md:p-8 ${project.featured ? "md:p-10" : "md:p-6"}`}>{project.imageUrl && <a href={project.liveUrl ?? project.githubUrl} target="_blank" rel="noreferrer" data-cursor="external" className="mb-6 block overflow-hidden rounded-2xl border hairline"><Image src={project.imageUrl} alt={`${project.title} interface preview`} width={1200} height={750} className="h-auto w-full object-cover transition duration-300 hover:scale-[1.02]" /></a>}<div className="flex flex-wrap items-start justify-between gap-4"><div><span className="eyebrow text-lime">{project.category}</span><h3 className={`${project.featured ? "text-4xl" : "text-2xl"} mt-5 font-display tracking-[-.04em] text-white`}>{project.title}</h3></div><span className="flex items-center gap-2 rounded-full border border-lime/30 px-3 py-1 text-xs text-lime">{project.status === "building" && <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-lime" />}{statusLabel}</span></div><p className="mt-5 max-w-2xl text-base leading-7 text-slate-300">{project.description}</p>{project.whyBuilt && <p className="mt-5 max-w-2xl border-l border-electric/60 pl-4 text-sm leading-7 text-slate-400"><span className="text-slate-200">Why I built it:</span> {project.whyBuilt}</p>}<div className="mt-8 grid gap-5 border-y hairline py-6 md:grid-cols-2"><div><p className="eyebrow mb-2">Problem</p><p className="text-sm leading-7 text-slate-400">{project.problem}</p></div><div><p className="eyebrow mb-2">Current status</p><p className="text-sm leading-7 text-slate-400">{project.result}</p></div></div><details className="group/details mt-6"><summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 rounded-lg border border-white/10 px-4 py-3 text-sm text-slate-200 transition-colors hover:border-electric/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime"><span>What was interesting?</span><span aria-hidden="true" className="text-electric transition-transform group-open/details:rotate-45">+</span></summary><div className="mt-6 grid gap-6 text-sm leading-7 text-slate-400 md:grid-cols-2"><div><p className="eyebrow mb-2">What I built</p><p>{project.build}</p></div><div><p className="eyebrow mb-2">Interesting engineering area</p><p>{project.engineeringProblem}</p></div><div><p className="eyebrow mb-2">Decision notes</p><p>{project.decision}</p></div>{project.architecture && <div><p className="eyebrow mb-2">Architecture</p><div className="flex flex-wrap gap-2">{project.architecture.map(layer => <span key={layer} className="rounded-full border border-white/10 px-3 py-1 text-xs text-slate-300">{layer}</span>)}</div></div>}</div></details><div className="mt-7 flex flex-wrap items-center gap-2"><span className="mr-2 text-xs text-slate-500">Technologies</span>{project.technologies.map(technology => <span key={technology} className="rounded-full border border-white/10 px-3 py-1 text-xs text-slate-400">{technology}</span>)}{(project.githubUrl || project.liveUrl) && <div className="ml-auto flex gap-4 text-sm">{project.githubUrl && <a data-cursor="external" href={project.githubUrl} target="_blank" rel="noreferrer" className="text-slate-300 underline decoration-electric underline-offset-4 hover:text-white">GitHub</a>}{project.liveUrl && <a data-cursor="external" href={project.liveUrl} target="_blank" rel="noreferrer" className="text-slate-300 underline decoration-electric underline-offset-4 hover:text-white">Live demo</a>}</div>}</div></article>;
+  const pipelineProject = project.title === "InterviewPilot" || project.title === "OpsAI" ? project.title : null;
+  return <article className={`project-card ${project.featured ? "project-card-featured" : ""}`}>
+    {project.imageUrl && (project.liveUrl ?? project.githubUrl) && <a href={project.liveUrl ?? project.githubUrl} target="_blank" rel="noreferrer" className="mb-6 block overflow-hidden rounded-2xl border hairline"><Image src={project.imageUrl} alt={`${project.title} interface preview`} width={1200} height={750} className="h-auto w-full object-cover transition duration-300 hover:scale-[1.02]" /></a>}
+    <div className="project-topline"><div><span className="eyebrow text-lime">{project.category}</span><h3>{project.title}</h3></div><span className="status-pill">{project.status === "building" && <span aria-hidden="true" className="mr-2 inline-block h-1.5 w-1.5 rounded-full bg-lime" />}{statusLabel}</span></div>
+    <p className="project-description">{project.description}</p>
+    {project.whyBuilt && <p className="project-why"><span>Why I built it:</span> {project.whyBuilt}</p>}
+    <div className="project-facts"><div><p className="eyebrow">Problem</p><p>{project.problem}</p></div><div><p className="eyebrow">Result</p><p>{project.result}</p></div></div>
+    <div className="project-highlight"><p className="eyebrow">Engineering focus</p><p>{project.engineeringProblem}</p></div>
+    {pipelineProject && <ProjectPipeline project={pipelineProject} />}
+    {project.title === "OpsAI" && <ActionPipeline />}
+    <div className="project-body"><div><p className="eyebrow">What I built</p><p>{project.build}</p></div><div><p className="eyebrow">Key decision</p><p>{project.decision}</p></div></div>
+    {project.architecture && <div className="project-architecture"><p className="eyebrow">Architecture</p><div className="pill-list">{project.architecture.map(layer => <span key={layer}>{layer}</span>)}</div></div>}
+    <details className="project-details"><summary>More project detail <span aria-hidden="true">+</span></summary><div className="project-details-content"><p className="eyebrow">Technologies</p><div className="pill-list">{project.technologies.map(technology => <span key={technology}>{technology}</span>)}</div></div></details>
+    <div className="project-footer"><span className="eyebrow">Explore</span><div className="project-links">{project.githubUrl && <a href={project.githubUrl} target="_blank" rel="noreferrer">GitHub <ArrowUpRight size={14} aria-hidden="true" /></a>}{project.liveUrl && <a href={project.liveUrl} target="_blank" rel="noreferrer">Live demo <ArrowUpRight size={14} aria-hidden="true" /></a>}</div></div>
+  </article>;
 }
 
 export function BuildsSection({ projects }: { projects: Project[] }) {
@@ -99,41 +105,29 @@ export function BuildsSection({ projects }: { projects: Project[] }) {
 }
 
 export function ThinkingSection({ principles, engineeringPrinciples }: { principles: { number: string; label: string }[]; engineeringPrinciples: string[] }) {
-  const reducedMotion = useReducedMotion();
   return (
     <Section id="thinking" eyebrow="How I work" title="How I work through difficult problems.">
-      <div className="mt-16 grid gap-px overflow-hidden rounded-2xl border hairline bg-white/10 md:grid-cols-5">{principles.map(principle => <m.div whileHover={reducedMotion ? undefined : { backgroundColor: "rgba(139,167,255,.08)" }} key={principle.number} className="bg-[#101218] p-6 md:min-h-48"><span aria-hidden="true" className="font-mono text-sm text-lime">{principle.number}</span><h3 className="mt-12 text-sm leading-6 text-slate-200">{principle.label}</h3></m.div>)}</div>
-      <div className="mt-12 grid gap-5 md:grid-cols-2"><p className="text-lg leading-8 text-slate-300">I try to keep the solution as simple as the problem allows.</p><div className="space-y-3 text-sm text-slate-400">{engineeringPrinciples.map(principle => <p key={principle} className="flex items-center gap-3 border-b hairline pb-3"><span aria-hidden="true" className="text-lime">↳</span>{principle}</p>)}</div></div>
+      <WorkflowVisual />
+      <div className="thinking-split"><p className="text-lg leading-8 text-slate-300">I try to keep the solution as simple as the problem allows.</p><div className="space-y-3 text-sm text-slate-400">{engineeringPrinciples.map(principle => <p key={principle} className="flex items-center gap-3 border-b hairline pb-3"><span aria-hidden="true" className="text-lime">↳</span>{principle}</p>)}</div></div>
       <SystemLayers />
     </Section>
   );
 }
 
 function SystemLayers() {
-  return <div className="mt-16 border-t hairline pt-8"><p className="eyebrow mb-6">Thinking across the system</p><div className="grid gap-2 md:grid-cols-7">{systemLayers.map((layer, index) => <div key={layer.label} className="flex items-center gap-2 md:block"><div className="flex-1 rounded-xl border border-white/10 bg-[#101218] p-4 transition-colors hover:border-electric/40"><span className="font-display text-lg text-white">{layer.label}</span><span className="mt-1 block text-xs leading-5 text-slate-500">{layer.description}</span></div>{index < systemLayers.length - 1 && <><span aria-hidden="true" className="text-electric md:hidden">↓</span><span aria-hidden="true" className="hidden text-electric md:my-3 md:block md:text-center">→</span></>}</div>)}</div><p className="mt-6 text-sm text-slate-400">See this in practice in <a href="#builds" className="text-lime underline underline-offset-4 hover:text-white">OpsAI and InterviewPilot</a>.</p></div>;
+  return <div className="mt-16 border-t hairline pt-8"><p className="eyebrow mb-6">Thinking across the system</p><SystemMap /><p className="mt-6 text-sm text-slate-400">See this in practice in <a href="#builds" className="text-lime underline underline-offset-4 hover:text-white">OpsAI and InterviewPilot</a>.</p></div>;
 }
 
 export function ExperienceSection({ experience }: { experience: Experience[] }) {
-  const reducedMotion = useReducedMotion();
-  const timelineRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: timelineRef, offset: ["start 75%", "end 45%"] });
-  const timelineScale = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
-
   return (
     <Section id="journey" eyebrow="Professional journey" title="The problems changed. So did the work around them.">
-      <div ref={timelineRef} className="relative mt-16">
+      <div className="relative mt-16">
         <div aria-hidden="true" className="absolute bottom-0 left-3 top-0 w-px bg-white/10 md:left-1/2" />
-        <m.div aria-hidden="true" className="absolute left-3 top-0 h-full w-px origin-top bg-lime md:left-1/2" style={{ scaleY: timelineScale }} />
+        <div aria-hidden="true" className="absolute left-3 top-0 h-1/3 w-px bg-lime md:left-1/2" />
         <div className="space-y-12 md:space-y-16">
           {experience.map((item, index) => (
-            <m.article
+            <article
               key={item.company}
-              initial={reducedMotion ? false : { opacity: 0, y: 28 }}
-              whileInView={reducedMotion ? undefined : { opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.65, delay: reducedMotion ? 0 : index * 0.08, ease: [0.22, 1, 0.36, 1] }}
-              whileHover={reducedMotion ? undefined : { y: -4 }}
-              data-cursor="card"
               className={`relative pl-10 md:w-1/2 md:pl-0 ${index % 2 === 0 ? "md:pr-14" : "md:ml-auto md:pl-14"}`}
             >
               <span aria-hidden="true" className={`absolute left-0 top-2 h-6 w-6 rounded-full border-4 border-ink bg-lime shadow-[0_0_18px_rgba(200,243,106,.45)] md:top-8 ${index % 2 === 0 ? "md:left-auto md:right-[-13px]" : "md:left-[-13px] md:right-auto"}`} />
@@ -149,7 +143,7 @@ export function ExperienceSection({ experience }: { experience: Experience[] }) 
                 <div className="mt-5 flex flex-wrap gap-2">{item.systems.map(system => <span key={system} className="rounded-full border border-electric/20 px-3 py-1 text-xs text-slate-400">{system}</span>)}</div>
                 <div className="mt-6 flex flex-wrap gap-2">{item.areas.map(area => <span key={area} className="rounded-full border border-white/10 px-3 py-1 text-xs text-slate-400">{area}</span>)}</div>
               </div>
-            </m.article>
+            </article>
           ))}
         </div>
       </div>
@@ -159,10 +153,6 @@ export function ExperienceSection({ experience }: { experience: Experience[] }) 
 
 export function ToolboxSection({ toolbox }: { toolbox: ToolboxGroup[] }) {
   return <Section id="toolbox" eyebrow="Technical toolbox" title="The tools I use to make and ship products."><div className="mt-14 divide-y divide-white/10 border-y hairline">{toolbox.map((group, index) => <div key={group.name} className="grid gap-3 py-6 md:grid-cols-[1fr_2fr]"><span className="text-sm text-slate-200"><span aria-hidden="true" className="mr-3 font-mono text-xs text-lime">0{index + 1}</span>{group.name}</span><span className="break-words text-sm leading-6 text-slate-400">{group.tools}</span></div>)}</div></Section>;
-}
-
-export function NotesSection({ notes }: { notes: EngineeringNote[] }) {
-  return <Section id="notes" eyebrow="Engineering notebook" title="Notes from building things."><div className="mt-16 divide-y divide-white/10 border-y hairline">{notes.map(note => <article key={note.title} className="grid gap-5 py-7 md:grid-cols-[1fr_2fr_auto] md:items-center"><div>{note.articleUrl ? <a href={note.articleUrl} className="block rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime"><span className="eyebrow text-electric">{note.category}</span><h3 className="mt-3 font-display text-2xl text-white">{note.title}</h3></a> : <><span className="eyebrow text-electric">{note.category}</span><h3 className="mt-3 font-display text-2xl text-white">{note.title}</h3></>}</div><p className="text-sm leading-7 text-slate-400">{note.summary}</p><div className="flex items-center justify-between gap-4 text-xs text-slate-500 md:block md:text-right"><span>{note.date}</span><span className="ml-3">{note.readingTime}</span><span className="ml-3 block text-lime md:mt-2">{note.status === "planned" ? "Draft" : "Published"}</span></div></article>)}</div></Section>;
 }
 
 function CurrentFocus() {

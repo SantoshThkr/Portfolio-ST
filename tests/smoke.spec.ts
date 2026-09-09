@@ -36,3 +36,28 @@ test("contact email link is a well-formed mailto", async ({ page }) => {
   const href = await page.locator('#contact a[href^="mailto:"]').first().getAttribute("href");
   expect(href).toMatch(/^mailto:[^@]+@[^@]+\.[^@]+/);
 });
+
+test("resume asset is available and linked", async ({ page, request }) => {
+  await page.goto("/");
+  await expect(page.getByRole("link", { name: "Resume" }).first()).toHaveAttribute("href", "/SantoshThakurResume.pdf");
+  const response = await request.get("/SantoshThakurResume.pdf");
+  expect(response.ok()).toBeTruthy();
+  expect(response.headers()["content-type"]).toContain("application/pdf");
+});
+
+test("mobile navigation opens and closes with Escape", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+  const menuButton = page.getByRole("button", { name: "Open navigation menu" });
+  await menuButton.click();
+  await expect(page.locator("#mobile-navigation")).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(page.locator("#mobile-navigation")).toBeHidden();
+});
+
+test("project cards expose their engineering focus and links", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.getByRole("heading", { name: "InterviewPilot" })).toBeVisible();
+  await expect(page.getByText("Engineering focus").first()).toBeVisible();
+  await expect(page.getByRole("link", { name: "GitHub" }).first()).toHaveAttribute("target", "_blank");
+});
