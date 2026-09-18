@@ -1,0 +1,224 @@
+.header {
+  padding-block: clamp(2rem, 5vw, 3rem) clamp(3rem, 7vw, 4.5rem);
+}
+
+.breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin: 0 0 clamp(2rem, 6vw, 3.5rem);
+  font-size: var(--step--1);
+  color: var(--ink-2);
+}
+
+.breadcrumb li:not(:last-child)::after {
+  content: "/";
+  margin-left: 0.4rem;
+  color: var(--rule-strong);
+}
+
+.breadcrumb a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+}
+
+.breadcrumb [aria-current] {
+  display: inline-flex;
+  align-items: center;
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.context {
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
+.title {
+  margin-top: 0.75rem;
+  font-size: var(--step-4);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1.02;
+}
+
+.tagline {
+  max-width: 44ch;
+  margin-top: 1.25rem;
+  font-size: var(--step-2);
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+}
+
+.meta {
+  display: grid;
+  gap: 1rem;
+  margin-top: clamp(2rem, 5vw, 3rem);
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--ink);
+}
+
+@media (min-width: 48rem) {
+  .meta {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2rem;
+  }
+}
+
+.meta dt {
+  font-size: var(--step--1);
+  font-weight: 650;
+  color: var(--ink-2);
+}
+
+.meta dd {
+  margin-top: 0.25rem;
+  font-size: var(--step--1);
+  line-height: 1.5;
+}
+
+.h2 {
+  font-size: var(--step-2);
+}
+
+.sectionLead {
+  max-width: var(--measure);
+  margin: 0.75rem 0 2rem;
+  color: var(--ink-2);
+}
+
+.prose {
+  display: grid;
+  gap: 1rem;
+  max-width: var(--measure);
+  font-size: var(--step-1);
+  line-height: 1.55;
+}
+
+.pairs {
+  display: grid;
+  border-top: 1px solid var(--rule);
+}
+
+.pairs > div {
+  display: grid;
+  gap: 0.25rem;
+  padding-block: 1.1rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+@media (min-width: 48rem) {
+  .pairs > div {
+    grid-template-columns: 11rem minmax(0, 1fr);
+    gap: 2rem;
+  }
+}
+
+.pairs dt {
+  font-weight: 650;
+}
+
+.pairs dd {
+  max-width: var(--measure);
+}
+
+.decisions {
+  display: grid;
+  gap: 2rem 3rem;
+  margin: 0;
+}
+
+@media (min-width: 48rem) {
+  .decisions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.decisions li {
+  display: grid;
+  align-content: start;
+  gap: 0.5rem;
+  padding-top: 1rem;
+  border-top: 2px solid var(--ink);
+}
+
+.decisions h3 {
+  font-size: var(--step-1);
+}
+
+.tableWrap {
+  margin-top: 3rem;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  min-width: 32rem;
+  border-collapse: collapse;
+  font-size: var(--step--1);
+}
+
+.table caption {
+  margin-bottom: 0.75rem;
+  text-align: left;
+  font-size: var(--step-0);
+  font-weight: 650;
+}
+
+.table th,
+.table td {
+  padding: 0.75rem 1rem 0.75rem 0;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--rule);
+}
+
+.table thead th {
+  color: var(--ink-2);
+  font-weight: 650;
+  border-bottom-color: var(--ink);
+}
+
+.table tbody th {
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.list {
+  display: grid;
+  gap: 0.75rem;
+  max-width: var(--measure);
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.list li::marker {
+  color: var(--accent);
+}
+
+.pager {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.next {
+  display: grid;
+  justify-items: end;
+  text-decoration: none;
+  text-align: right;
+}
+
+.nextName {
+  font-size: var(--step-3);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.next:hover .nextName {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+}

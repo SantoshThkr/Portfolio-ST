@@ -1,0 +1,311 @@
+/* ---------- Hero ---------- */
+.hero {
+  padding-block: clamp(3.5rem, 10vw, 7.5rem) clamp(3rem, 7vw, 5rem);
+}
+
+.intro {
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
+.heroTitle {
+  max-width: 21ch;
+  margin-top: 1.25rem;
+  font-size: clamp(2.25rem, 1.1rem + 4.2vw, 4.75rem);
+  font-weight: 700;
+  line-height: 1.04;
+  letter-spacing: -0.035em;
+}
+
+.lead {
+  max-width: 52ch;
+  margin-top: 1.5rem;
+  font-size: var(--step-1);
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1rem;
+  margin-top: 2.25rem;
+}
+
+.resumeLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding-inline: 0.25rem;
+}
+
+.proof {
+  display: grid;
+  gap: 0;
+  margin-top: clamp(3rem, 7vw, 4.5rem);
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--ink);
+}
+
+.proof li {
+  padding-block: 1rem;
+  font-weight: 550;
+  line-height: 1.4;
+}
+
+.proof li + li {
+  border-top: 1px solid var(--rule);
+}
+
+@media (min-width: 48rem) {
+  .proof {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .proof li {
+    padding: 1.25rem 1.5rem 0 0;
+  }
+
+  .proof li + li {
+    border-top: 0;
+    padding-left: 1.5rem;
+    border-left: 1px solid var(--rule);
+  }
+}
+
+/* The page's one orchestrated moment: the hero settles in on first load. */
+@media (prefers-reduced-motion: no-preference) {
+  .hero > * {
+    animation: rise 700ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+
+  .hero > :nth-child(2) {
+    animation-delay: 60ms;
+  }
+
+  .hero > :nth-child(3) {
+    animation-delay: 140ms;
+  }
+
+  .hero > :nth-child(4) {
+    animation-delay: 200ms;
+  }
+
+  .hero > :nth-child(5) {
+    animation-delay: 280ms;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+/* ---------- Work ---------- */
+.subheading {
+  font-size: var(--step-1);
+}
+
+.other {
+  display: grid;
+  gap: 1rem;
+  padding-top: 2.5rem;
+  border-top: 1px solid var(--rule);
+}
+
+.otherList {
+  display: grid;
+  gap: 1.25rem;
+  max-width: var(--measure);
+}
+
+.otherList dt {
+  font-weight: 650;
+}
+
+.otherList dd {
+  color: var(--ink-2);
+}
+
+/* ---------- Experience ---------- */
+.roles {
+  display: grid;
+  margin: 0;
+}
+
+.role {
+  display: grid;
+  gap: 0.75rem;
+  padding-block: 2rem;
+  border-top: 1px solid var(--rule);
+}
+
+.role:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+@media (min-width: 40rem) {
+  .role {
+    grid-template-columns: 10rem minmax(0, 1fr);
+    gap: 2rem;
+  }
+}
+
+.period {
+  font-size: var(--step--1);
+  font-weight: 600;
+  color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+  padding-top: 0.3rem;
+}
+
+.roleBody {
+  display: grid;
+  gap: 0.75rem;
+  max-width: var(--measure);
+}
+
+.roleCompany {
+  font-size: var(--step-2);
+}
+
+.roleTitle {
+  margin-top: -0.4rem;
+  font-weight: 600;
+}
+
+.rolePoints {
+  list-style: disc;
+  display: grid;
+  gap: 0.5rem;
+  margin: 0.25rem 0 0.5rem;
+  padding-left: 1.1rem;
+}
+
+.rolePoints li::marker {
+  color: var(--accent);
+}
+
+/* ---------- Skills ---------- */
+.skills {
+  display: grid;
+  border-top: 1px solid var(--rule);
+}
+
+.skillRow {
+  display: grid;
+  gap: 0.35rem;
+  padding-block: 1.25rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+@media (min-width: 48rem) {
+  .skillRow {
+    grid-template-columns: 11rem minmax(0, 1fr);
+    column-gap: 2rem;
+  }
+
+  .skillEvidence {
+    grid-column: 2;
+  }
+}
+
+.skillName {
+  font-weight: 650;
+}
+
+.skillItems {
+  max-width: var(--measure);
+}
+
+.skillEvidence {
+  font-size: var(--step--1);
+  color: var(--ink-2);
+}
+
+/* ---------- Approach ---------- */
+.approach {
+  display: grid;
+  gap: 3rem;
+}
+
+.principles {
+  display: grid;
+  gap: 2rem 3rem;
+  margin: 0;
+}
+
+@media (min-width: 48rem) {
+  .principles {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.principles li {
+  display: grid;
+  gap: 0.5rem;
+  padding-top: 1rem;
+  border-top: 2px solid var(--ink);
+}
+
+.principleTitle {
+  font-size: var(--step-1);
+}
+
+.education {
+  display: grid;
+  gap: 0.75rem;
+  margin: 1rem 0 0;
+}
+
+.education li {
+  display: grid;
+}
+
+.degree {
+  font-weight: 600;
+}
+
+/* ---------- Contact ---------- */
+.contact {
+  display: grid;
+  justify-items: start;
+  gap: 1.5rem;
+}
+
+.contactLead {
+  max-width: 48ch;
+  font-size: var(--step-1);
+  line-height: 1.45;
+}
+
+.email {
+  max-width: 100%;
+  font-size: var(--step-3);
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-decoration-color: var(--accent);
+  text-underline-offset: 0.18em;
+  overflow-wrap: anywhere;
+}
+
+.contactLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  margin: 0;
+}
+
+.contactLinks a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+}

@@ -1,274 +1,448 @@
-export type NavigationItem = {
+/**
+ * Portfolio content.
+ *
+ * Every claim here comes from one of three sources: the résumé in /public,
+ * the previous version of this site, or the public GitHub repositories.
+ * Keep it that way — if something can't be traced to a source, leave it out.
+ */
+
+export type FlowStep = {
   label: string;
-  id: string;
+  /** Short technical detail shown under the label. */
+  detail?: string;
+  /** Marks a control point (auth, approval, threshold) so it reads differently. */
+  gate?: boolean;
+  /** The label is a literal identifier from the code. */
+  code?: boolean;
 };
 
-export type StoryType = "performance" | "architecture" | "realtime" | "migration";
-
-export type EngineeringStory = {
-  number: string;
-  tag: string;
-  title: string;
-  summary: string;
-  challenge: string;
-  approach: string;
-  decisions: string[];
-  outcome: string;
-  type: StoryType;
-};
-
-export type Principle = {
-  number: string;
-  label: string;
-};
-
-export type ToolboxGroup = {
+export type FlowPath = {
   name: string;
-  tools: string;
+  steps: FlowStep[];
 };
 
-export type Experience = {
-  company: string;
+export type Decision = {
+  title: string;
+  body: string;
+};
+
+export type CaseStudy = {
   role: string;
-  period: string;
-  stage: string;
-  summary: string;
-  scope: string;
-  systems: string[];
-  areas: string[];
+  why: string;
+  problem: string;
+  built: Decision[];
+  decisions: Decision[];
+  quality?: string[];
+  limits: string[];
+  table?: { caption: string; columns: [string, string, string]; rows: [string, string, string][] };
 };
-
-export type ProjectStatus = "built" | "building" | "live" | "experiment";
 
 export type Project = {
-  title: string;
-  category: string;
-  description: string;
-  problem: string;
-  build: string;
-  engineeringProblem: string;
-  decision: string;
-  result: string;
-  whyBuilt?: string;
-  architecture?: string[];
-  technologies: string[];
-  githubUrl?: string;
-  liveUrl?: string;
-  imageUrl?: string;
-  status: ProjectStatus;
-  featured?: boolean;
+  slug: string;
+  name: string;
+  context: string;
+  tagline: string;
+  summary: string;
+  highlights: string[];
+  stack: string[];
+  repo?: string;
+  flow: FlowPath[];
+  flowNote: string;
+  caseStudy?: CaseStudy;
 };
-
-export type NowCategory = "building" | "working-on" | "interested-in" | "recently";
-
-export type NowItem = {
-  category: NowCategory;
-  title: string;
-  description: string;
-};
-
-export type SystemLayer = {
-  label: string;
-  description: string;
-};
-
-export type Capability = {
-  title: string;
-  description: string;
-};
-
-export const navigation: NavigationItem[] = [
-  { label: "Builds", id: "builds" },
-  { label: "Work", id: "work" },
-  { label: "Journey", id: "journey" },
-  { label: "Thinking", id: "thinking" },
-  { label: "Toolbox", id: "toolbox" },
-  { label: "Contact", id: "contact" }
-];
-
-export const systemSteps = ["Hard problem", "Useful trade-off", "Working outcome"];
-export const githubUrl = "https://github.com/SantoshThkr";
-export const resumeUrl = "/SantoshThakurResume.pdf";
-export const hasResume = true;
-export const linkedinUrl = "https://www.linkedin.com/in/ithakurr/";
-export const emailAddress = "santoshthakurxd@gmail.com";
-
-export const currentFocus = ["Scalable web products", "Application services", "AI-powered applications"];
-
-export const capabilities: Capability[] = [
-  { title: "Scalable applications", description: "Interfaces and products that need to stay fast as content, traffic and product surface area grow." },
-  { title: "Product platforms", description: "Shared foundations that help several teams ship features without duplicating every decision." },
-  { title: "Real-time experiences", description: "Products where state changes continuously and the UI still needs to feel predictable." },
-  { title: "APIs and integrations", description: "Application work that connects user flows to services, data and external systems." },
-  { title: "Performance", description: "Finding the work users are waiting for and moving everything else out of their way." },
-  { title: "AI product experiences", description: "Applications around LLM APIs, streaming responses and structured output." }
-];
-
-export const systemLayers: SystemLayer[] = [
-  { label: "Product", description: "What needs solving" },
-  { label: "Interface", description: "What people use" },
-  { label: "Application logic", description: "Behavior and state" },
-  { label: "APIs / systems", description: "Services working together" },
-  { label: "Data", description: "Information the product needs" },
-  { label: "Infrastructure", description: "How it runs and ships" },
-  { label: "Intelligent features", description: "Useful automation" }
-];
-
-export const mindsetPrinciples: Principle[] = [
-  { number: "01", label: "Understand the failure first" },
-  { number: "02", label: "Measure the slow part" },
-  { number: "03", label: "Keep boundaries clear" },
-  { number: "04", label: "Make the next change easier" },
-  { number: "05", label: "Check the result in practice" }
-];
-
-export const engineeringPrinciples = [
-  "Fast software is easier to use and easier to trust.",
-  "I measure before I optimize.",
-  "A good boundary is often better than another abstraction.",
-  "The right solution is the one the team can keep changing."
-];
-
-export const experience: Experience[] = [
-  {
-    company: "Infosys Ltd.",
-    role: "Senior Associate Consultant – Frontend Developer",
-    period: "November 2025 – April 2026",
-    stage: "Enterprise delivery",
-    summary: "Worked on enterprise applications where the UI, APIs, testing and delivery pipeline all had to hold up together.",
-    scope: "The work crossed application behavior, service integration, accessibility and release confidence.",
-    systems: ["Enterprise applications", "REST APIs", "Automated testing", "CI/CD"],
-    areas: ["React", "TypeScript", "Redux Toolkit", "Python / Flask", "Playwright", "CI/CD"]
-  },
-  {
-    company: "BagConvergence",
-    role: "Software Developer – Frontend Developer",
-    period: "March 2021 – November 2025",
-    stage: "Scale and complexity",
-    summary: "Worked on large React and Next.js products serving millions of daily users. The problems ranged from reusable foundations to micro frontends, real-time updates and Core Web Vitals.",
-    scope: "The work grew from shipping features to making decisions about architecture, performance and how teams changed the product.",
-    systems: ["Large-scale products", "Micro Frontends", "Real-time systems", "Core Web Vitals"],
-    areas: ["React", "Next.js", "Micro Frontends", "GraphQL", "WebSockets", "Performance"]
-  },
-  {
-    company: "ModernVastu Research & Remedy Pvt. Ltd.",
-    role: "Front-End Developer",
-    period: "April 2019 – March 2020",
-    stage: "Product foundations",
-    summary: "Built responsive web applications from designs and API contracts, learning what it takes to make a product feel consistent across screens.",
-    scope: "This was where the fundamentals of product interfaces, API integration and reusable UI work came together.",
-    systems: ["Responsive web applications", "REST APIs", "UI systems"],
-    areas: ["React", "JavaScript", "REST APIs", "Responsive UI", "Tailwind CSS", "Material UI"]
-  }
-];
 
 export const projects: Project[] = [
   {
-    title: "InterviewPilot",
-    category: "AI mock interview platform · InterviewPilot repository",
-    description: "An interview platform that uses a candidate's resume and target role to run adaptive mock interviews.",
-    problem: "Generic interview prep doesn't adapt to a candidate's actual resume, target role, or weak areas.",
-    build: "Resume analysis, role and difficulty selection, five interview modes, eight interviewer personalities, streaming conversations with follow-ups, voice interaction, a Monaco coding round with test execution, anti-cheating detection (focus-loss and copy-paste tracking), interview history and adaptive performance reports.",
-    engineeringProblem: "Keeping a multi-turn interview coherent while streaming responses and generating context-aware follow-up questions in real time — and running anti-cheat checks (focus loss, copy-paste detection) alongside that without interrupting the flow.",
-    decision: "Split the system into a Next.js frontend and a separate NestJS/Prisma backend so interview state, resume analysis and reporting could evolve independently of the UI. PostgreSQL persists sessions, transcripts and adaptive performance data; OpenAI handles question generation, follow-ups and evaluation.",
-    result: "Built. The public repository is available for review.",
-    whyBuilt: "I wanted to build interview practice around a candidate's actual background instead of a fixed question list.",
-    architecture: ["Resume analysis", "Streaming interview flow", "Coding round", "Reporting and history"],
-    technologies: ["Next.js", "TypeScript", "NestJS", "Prisma", "PostgreSQL", "OpenAI", "Clerk"],
-    githubUrl: "https://github.com/SantoshThkr/InterviewPilot",
-    status: "built",
-    featured: true
+    slug: "contracts-ai",
+    name: "Internal Contracts AI",
+    context: "Professional work, internal platform",
+    tagline: "Question answering over contract documents, with answers that cite the pages they came from.",
+    summary:
+      "A retrieval-augmented Q&A platform for contracts that I took from an empty repository to production in five weeks. It is internal, so there is no public source or demo — the details below are the ones I can share.",
+    highlights: [
+      "Answers stream to the browser over server-sent events and carry citations back to specific pages, including answers that draw on several pages.",
+      "Documents are indexed asynchronously and deduplicated, so uploads don't block requests and repeated files don't pollute retrieval.",
+      "Intent-based routing decides how each question is handled, behind a JWT-secured FastAPI service.",
+    ],
+    stack: ["Python", "FastAPI", "LangChain", "AWS Bedrock", "Qdrant", "PostgreSQL", "SSE", "JWT"],
+    flow: [
+      {
+        name: "Indexing",
+        steps: [
+          { label: "Contract upload" },
+          { label: "Async indexing job" },
+          { label: "Deduplication", gate: true },
+          { label: "Chunks + embeddings" },
+          { label: "Qdrant" },
+        ],
+      },
+      {
+        name: "Answering",
+        steps: [
+          { label: "Question", detail: "JWT-authenticated", gate: true },
+          { label: "Intent routing" },
+          { label: "Retrieval", detail: "Qdrant" },
+          { label: "Generation", detail: "LangChain + Bedrock" },
+          { label: "Streamed answer", detail: "SSE, page citations" },
+        ],
+      },
+    ],
+    flowNote: "Simplified. Component names are real; internal details are omitted.",
   },
   {
-    title: "OpsAI",
-    category: "Independent build · Build",
-    description: "A document-to-retrieval system for uploading files, processing them in the background and searching them with RAG.",
-    problem: "Teams accumulate documents faster than anyone can search or reason over them; keyword search doesn't understand content.",
-    build: "A Next.js web app, FastAPI service and shared TypeScript contracts around document upload, PDF/TXT/Markdown processing, chunking, embeddings and owner-scoped retrieval. JWT authentication with viewer/analyst/admin RBAC gates access, and an authenticated MCP-style JSON-RPC adapter exposes typed, allowlisted tools behind approval gates, idempotent execution and audit logging — built to run locally against deterministic providers, so it doesn't require an OpenAI key to try.",
-    engineeringProblem: "Processing uploaded documents into chunked, embedded, owner-scoped retrieval without blocking the request, and building the approval-gated action layer around it — state-changing actions go through an approval gate and get written to an audit log before they run.",
-    decision: "PostgreSQL with pgvector keeps retrieval and relational data in one store instead of standing up a separate vector database. Redis backs the background worker queue and rate limiting. Actions are exposed through an MCP-style JSON-RPC adapter with idempotent execution, since an operations tool should be auditable and safe to retry, not just functional.",
-    result: "build. Docker Compose, health endpoints and the document processing path are documented in the repository.",
-    whyBuilt: "I wanted to follow the document-to-retrieval path end to end, including the worker, the approval-gated action layer and the data boundaries around it.",
-    architecture: ["Web / API boundary", "Document processing worker", "Chunking and embeddings", "pgvector retrieval", "RBAC", "MCP-style tool adapter", "Approval gates & audit log"],
-    technologies: ["Next.js", "FastAPI", "PostgreSQL", "pgvector", "Redis", "SQLAlchemy", "Docker"],
-    githubUrl: "https://github.com/SantoshThkr/ops-ai",
-    status: "built",
-    featured: true
+    slug: "opsai",
+    name: "OpsAI",
+    context: "Independent project, open source",
+    tagline:
+      "An operations assistant that answers from your documents and metrics, and can propose actions but never take one without an admin's approval.",
+    summary:
+      "OpsAI grounds answers in uploaded documents and recorded service metrics, and lets its agent propose incidents through a controlled approval workflow. It runs entirely on local, deterministic providers, so development and CI need no paid model API.",
+    highlights: [
+      "Owner-scoped RAG over PDF, TXT and Markdown, with a similarity threshold that has to pass before any citation is shown.",
+      "The agent can call only four typed, allowlisted tools. A change becomes a proposal; an admin approves it; execution is idempotent and written to an audit log.",
+      "Viewer, analyst and admin roles are enforced in the API, never the frontend — including through an authenticated MCP-style JSON-RPC adapter that reuses the same services.",
+    ],
+    stack: ["Next.js", "TypeScript", "FastAPI", "SQLAlchemy", "PostgreSQL", "pgvector", "Redis", "Docker", "GitHub Actions"],
+    repo: "https://github.com/SantoshThkr/ops-ai",
+    flow: [
+      {
+        name: "Ingest",
+        steps: [
+          { label: "Upload", detail: "PDF, TXT, Markdown" },
+          { label: "API validates + stores", detail: "generated storage keys" },
+          { label: "Redis job" },
+          { label: "Worker", detail: "extract, chunk, embed" },
+          { label: "PostgreSQL + pgvector" },
+        ],
+      },
+      {
+        name: "Ask",
+        steps: [
+          { label: "Next.js chat", detail: "SSE" },
+          { label: "Auth + rate limit", detail: "JWT cookie, Redis", gate: true },
+          { label: "Deterministic agent", detail: "typed intent routing" },
+          { label: "Allowlisted tool" },
+          { label: "Grounded answer", detail: "thresholded citations", gate: true },
+        ],
+      },
+      {
+        name: "Act",
+        steps: [
+          { label: "create_incident", detail: "proposal only", code: true },
+          { label: "Admin approval", detail: "must be unexpired", gate: true },
+          { label: "Idempotent execution", detail: "DB locking" },
+          { label: "Audit log" },
+        ],
+      },
+    ],
+    flowNote: "Matches the architecture documented in the repository.",
+    caseStudy: {
+      role: "Independent build across the web app, API, worker, data layer and Docker setup.",
+      why: "I wanted to follow the document-to-retrieval path end to end — including the background worker, the approval-gated action layer and the data boundaries around them — rather than stop at a chat box on top of an embedding call.",
+      problem:
+        "Operations teams need answers grounded in internal documents and recorded service data. But the moment an assistant can change something, it needs the same controls as any other operational tool: permissions, approval, auditability and safe retries.",
+      built: [
+        {
+          title: "Web app",
+          body: "Next.js, React and TypeScript, with an SSE chat UI that renders streamed answers, citations and approval-required activity.",
+        },
+        {
+          title: "API and worker",
+          body: "FastAPI with SQLAlchemy and Alembic migrations. The API owns authentication, validation, authorization, orchestration and persistence. A Redis-backed worker extracts, chunks and embeds documents outside the request cycle.",
+        },
+        {
+          title: "Shared contracts",
+          body: "A deliberately small TypeScript package for the types the web app and API agree on.",
+        },
+        {
+          title: "Infrastructure",
+          body: "Docker Compose for PostgreSQL with pgvector, Redis, the API, the worker and the web app, plus /health and /ready endpoints for liveness and dependency-aware readiness.",
+        },
+      ],
+      decisions: [
+        {
+          title: "Deterministic providers by default",
+          body: "Local embedding and chat providers are the default, so tests, evaluation and CI are reproducible and don't need an API key. An external embedding provider can be switched on through configuration.",
+        },
+        {
+          title: "One database for relational data and vectors",
+          body: "PostgreSQL with pgvector is the system of record for documents, chunks, conversations, metrics, incidents, approvals and audit events. One store means one backup story and one transaction boundary.",
+        },
+        {
+          title: "Typed allowlists instead of open-ended tools",
+          body: "Tool names and arguments are validated against an allowlist, which rules out arbitrary tool or SQL routing by construction.",
+        },
+        {
+          title: "Proposal and execution are separate steps",
+          body: "Analysts can propose an incident; only an admin can approve and execute it, and only while the approval is unexpired. Database locking and idempotency keys make repeated execution safe.",
+        },
+        {
+          title: "Logs that help an investigation without leaking",
+          body: "Structured logs carry request IDs, operation, user, status and durations, and never credentials, tokens, cookies, API keys or document contents.",
+        },
+        {
+          title: "Evaluate behaviour, not invented scores",
+          body: "An offline evaluator checks knowledge gating, metrics, the incident lifecycle, idempotency, RBAC and MCP requests, and reports expected versus actual behaviour. It is regression testing, not LLM quality scoring.",
+        },
+      ],
+      quality: [
+        "Backend: pytest, Ruff lint and format checks, mypy.",
+        "Frontend: Vitest, ESLint, TypeScript and a production Next.js build.",
+        "All of it runs in GitHub Actions on every push and pull request, with no paid AI service involved.",
+      ],
+      limits: [
+        "The local provider is deterministic and intentionally limited — it is not a general-purpose LLM.",
+        "Incident execution is a persisted local boundary; it doesn't integrate with external ticketing or cloud operations systems.",
+        "Deployment, secret management, TLS, backups, scaling and production monitoring are left to the hosting environment.",
+        "The JSON-RPC endpoint is an MCP-style adapter, not a standards-certified MCP server.",
+      ],
+      table: {
+        caption: "The four tools the agent can call",
+        columns: ["Tool", "Purpose", "Changes state?"],
+        rows: [
+          ["search_knowledge", "Owner-scoped document retrieval", "No"],
+          ["get_metric", "Read an allowlisted recorded metric", "No"],
+          ["get_incident", "Read an incident the user is authorized to see", "No"],
+          ["create_incident", "Create a proposal that needs approval", "Proposal only"],
+        ],
+      },
+    },
   },
   {
-    title: "MitraAI",
-    category: "Experiment · Earlier build",
-    description: "An earlier React and Vite experiment around an AI chat interface, themes, chat management and dashboard-style result views.",
-    problem: "Exploring how an AI chat product could organize conversations and present results in a usable interface.",
-    build: "A React/Vite interface with theme switching, chat management, dashboard and results components, and local-storage-related behavior.",
-    engineeringProblem: "A smaller, earlier build than InterviewPilot or OpsAI — working through chat state, theming and result display in a plain React/Vite app before taking on a full-stack build with its own backend.",
-    decision: "Kept deliberately simple: a React/Vite frontend calling the OpenAI API directly, with no separate backend. That scope matched what this project was exploring.",
-    result: "Earlier build. The repository is available for reference.",
-    whyBuilt: "I used this as an earlier experiment to explore the interaction patterns around AI chat.",
-    technologies: ["React", "Vite", "JavaScript"],
-    githubUrl: "https://github.com/SantoshThkr/MitraAI",
-    status: "experiment"
-  }
+    slug: "interviewpilot",
+    name: "InterviewPilot",
+    context: "Independent project, open source",
+    tagline: "Mock interviews built from your own résumé, streamed in real time, with a coding round and a scored report.",
+    summary:
+      "Upload a résumé, choose a role, difficulty and interviewer style, and InterviewPilot runs a streaming interview that follows up on your answers. It ends with a report, and the weak areas it finds feed into your next session.",
+    highlights: [
+      "A NestJS and Prisma API separate from the Next.js app; interviewer replies stream back over server-sent events.",
+      "Résumé analysis and reports use JSON-mode structured output, stored in PostgreSQL alongside transcripts and per-user weak areas.",
+      "A Monaco coding round runs JavaScript and TypeScript against test cases in a node:vm context with a 250 ms timeout and a blocklist for unsafe APIs.",
+    ],
+    stack: ["Next.js", "React", "TypeScript", "Clerk", "NestJS", "Prisma", "PostgreSQL", "OpenAI API"],
+    repo: "https://github.com/SantoshThkr/InterviewPilot",
+    flow: [
+      {
+        name: "Setup",
+        steps: [
+          { label: "Résumé upload", detail: "PDF, DOCX, TXT" },
+          { label: "Text extraction" },
+          { label: "Résumé analysis", detail: "JSON output" },
+          { label: "Interview config", detail: "role, type, difficulty, style" },
+        ],
+      },
+      {
+        name: "Interview",
+        steps: [
+          { label: "Answer", detail: "typed or spoken" },
+          { label: "NestJS API", detail: "Clerk auth guard", gate: true },
+          { label: "Prompt", detail: "history + résumé context" },
+          { label: "OpenAI stream" },
+          { label: "SSE to browser", detail: "follow-up question" },
+        ],
+      },
+      {
+        name: "Report",
+        steps: [
+          { label: "Complete interview" },
+          { label: "Structured evaluation", detail: "JSON output" },
+          { label: "Report + weak areas", detail: "PostgreSQL" },
+          { label: "Next session's topics" },
+        ],
+      },
+    ],
+    flowNote: "Matches the NestJS modules and endpoints in the repository.",
+    caseStudy: {
+      role: "Independent build across the Next.js app, NestJS API and PostgreSQL schema.",
+      why: "I wanted interview practice built around a candidate's actual background instead of a fixed question list.",
+      problem:
+        "Generic interview prep doesn't adapt to a candidate's résumé, target role or weak areas. Practice is most useful when the questions come from what you've actually done, and when the next session knows where the last one went badly.",
+      built: [
+        {
+          title: "Interview flow",
+          body: "Five interview types (technical, HR, behavioural, managerial and mixed), eight interviewer personalities, and streamed follow-up questions that use the conversation history and résumé context.",
+        },
+        {
+          title: "Voice mode",
+          body: "Speech-to-text and text-to-speech through the browser's speech APIs, so an interview can be spoken rather than typed.",
+        },
+        {
+          title: "Coding round",
+          body: "A Monaco editor with problems and test cases, executed server-side for JavaScript and TypeScript.",
+        },
+        {
+          title: "Integrity signals",
+          body: "Focus loss and copy/paste events are detected during the interview and surfaced as warnings.",
+        },
+        {
+          title: "Reports and progress",
+          body: "Scored reports with a learning roadmap, interview history, and a dashboard with scores, streaks and a practice plan.",
+        },
+      ],
+      decisions: [
+        {
+          title: "A separate backend",
+          body: "The Next.js frontend and the NestJS/Prisma backend are separate services, so interview state, résumé analysis and reporting can evolve independently of the UI.",
+        },
+        {
+          title: "Streaming over SSE",
+          body: "The answer endpoint responds as an event stream and writes each token delta as it arrives. The interviewer starts replying immediately, and the full text is persisted once the stream ends.",
+        },
+        {
+          title: "Structured output where the app needs data",
+          body: "Résumé analysis and reports request JSON output, because the app stores and renders them as fields — scores, strengths, weaknesses — not as prose.",
+        },
+        {
+          title: "Weak areas carry forward",
+          body: "Weaknesses from each report are stored per user and merged into the topics of the next interview, which is what makes the practice adaptive rather than random.",
+        },
+      ],
+      limits: [
+        "Code execution uses node:vm with pattern checks and a short timeout. That is reasonable for a practice tool running JavaScript and TypeScript, but it is not a hardened sandbox — Judge0 or Piston integration for other languages is on the roadmap.",
+        "Also on the roadmap: fullscreen exam mode, WebRTC video, company-specific question banks and peer mock interviews.",
+      ],
+    },
+  },
 ];
 
-export const nowItems: NowItem[] = [
-  { category: "building", title: "Independent engineering builds", description: "Turning ideas like OpsAI into small, testable product experiments." },
-  { category: "working-on", title: "Application services", description: "Working across APIs, data and service boundaries as part of building complete products." },
-  { category: "interested-in", title: "AI product experiences", description: "Building applications around LLM APIs, streaming responses, structured outputs and useful workflows." },
-  { category: "recently", title: "Performance and architecture", description: "Looking closely at the trade-offs that keep large applications fast and changeable." }
+export const otherWork = [
+  {
+    name: "AI chat platform",
+    body: "Chat interfaces on OpenAI APIs with streamed responses, reusable React components, secure REST integration and prompt work to improve answer quality.",
+  },
+  {
+    name: "Headless CMS entertainment platform",
+    body: "A Next.js front end on WordPress VIP, with automated content workflows, optimized image delivery and SEO.",
+  },
 ];
 
-export const stories: EngineeringStory[] = [
+export type Role = {
+  company: string;
+  title: string;
+  start: string;
+  end: string;
+  /** ISO dates for <time> elements. */
+  startIso: string;
+  endIso: string;
+  summary: string;
+  points: string[];
+  stack: string[];
+};
+
+export const experience: Role[] = [
   {
-    number: "01",
-    tag: "Scale / performance",
-    title: "Finding the work that slows the product down.",
-    summary: "On content-heavy products, a fast local build does not tell you much about the real user experience.",
-    challenge: "Large pages, mobile networks and third-party dependencies put too much work between a user’s intent and the first useful interaction.",
-    approach: "I traced the user journey, measured the slow points and moved non-essential work out of the critical path. The important part was choosing what not to load yet.",
-    decisions: ["Render the useful part first", "Load capability on demand", "Use real-user signals"],
-    outcome: "A faster experience that holds up beyond the developer laptop and local network.",
-    type: "performance"
+    company: "Infosys",
+    title: "Senior Associate Consultant",
+    start: "Nov 2025",
+    end: "Apr 2026",
+    startIso: "2025-11",
+    endIso: "2026-04",
+    summary: "Enterprise applications across React, Python and AI-enabled workflows.",
+    points: [
+      "Built enterprise applications with React, TypeScript, Python and FastAPI, and integrated them with REST APIs and backend services.",
+      "Worked with RAG, document processing and vector search patterns for enterprise use cases.",
+      "Added automated testing with Playwright and Selenium, and improved performance, accessibility and reliability.",
+    ],
+    stack: ["React", "Next.js", "TypeScript", "FastAPI", "OpenAI", "RAG", "Playwright"],
   },
   {
-    number: "02",
-    tag: "Architecture / teams",
-    title: "Making a growing application easier to change.",
-    summary: "As the product grew, small changes started touching too many parts of the application.",
-    challenge: "More product surface area and more teams meant that coupling made releases risky and slowed down otherwise simple work.",
-    approach: "We looked for boundaries based on ownership and release needs, then kept shared primitives small enough that teams could still make local decisions.",
-    decisions: ["Start with ownership", "Share primitives, not everything", "Separate change where it matters"],
-    outcome: "Teams had clearer places to work, with less accidental coupling between product areas.",
-    type: "architecture"
+    company: "BagConvergence",
+    title: "Software Developer",
+    start: "Mar 2021",
+    end: "Nov 2025",
+    startIso: "2021-03",
+    endIso: "2025-11",
+    summary: "High-traffic React and Next.js products, from shared foundations to real-time systems.",
+    points: [
+      "Built and maintained React and Next.js applications serving 5M+ daily users across multiple products.",
+      "Built reusable component libraries and micro frontends so business modules could be developed and deployed independently.",
+      "Built WebSocket-based real-time dashboards supporting 200K+ concurrent users.",
+      "Improved application performance by over 50% with code splitting, lazy loading, memoization, caching and image optimization, and reached mobile performance scores above 90.",
+      "Integrated GraphQL and REST APIs, and contributed to Python backend integrations, Docker-based services, AWS deployments and CI/CD pipelines.",
+    ],
+    stack: ["React", "Next.js", "TypeScript", "GraphQL", "WebSockets", "Micro frontends", "AWS"],
   },
   {
-    number: "03",
-    tag: "Real-time / state",
-    title: "When live data makes the UI harder to trust.",
-    summary: "Real-time features are not only about receiving events; the interface has to make changing state understandable.",
-    challenge: "Connection drops, out-of-order updates, stale data and too many events can make a live screen feel unreliable.",
-    approach: "I made the path from event to service to state to screen explicit, then designed for reconnects and graceful degradation instead of assuming the connection was perfect.",
-    decisions: ["Give events an owner", "Let state recover", "Respect the user’s attention"],
-    outcome: "A live interface that stays predictable when the underlying system is not.",
-    type: "realtime"
+    company: "ModernVastu Research & Remedy",
+    title: "Front-End Developer",
+    start: "Apr 2019",
+    end: "Mar 2020",
+    startIso: "2019-04",
+    endIso: "2020-03",
+    summary: "Where the product fundamentals came together.",
+    points: ["Built responsive React applications with Tailwind CSS and Material UI, integrated with REST APIs."],
+    stack: ["React", "JavaScript", "Tailwind CSS", "Material UI"],
   },
-  {
-    number: "04",
-    tag: "Modernization / risk",
-    title: "Modernizing a product without stopping it.",
-    summary: "Replacing old parts of a working application is mostly a risk-management problem.",
-    challenge: "Hidden dependencies, undocumented behavior and backward compatibility made a rewrite much riskier than it first appeared.",
-    approach: "We mapped the seams, added confidence with tests and migrated in thin slices so the product stayed usable while the foundation changed.",
-    decisions: ["Map dependencies first", "Migrate in thin slices", "Validate before expanding"],
-    outcome: "A safer path to reduce accumulated friction without taking an unnecessary rewrite bet.",
-    type: "migration"
-  }
 ];
 
-export const toolbox: ToolboxGroup[] = [
-  { name: "Product engineering", tools: "React · Next.js · TypeScript · JavaScript · Angular" },
-  { name: "Application architecture", tools: "State management · Component systems · Micro Frontends · Performance" },
-  { name: "Systems & integration", tools: "REST APIs · GraphQL · WebSockets · Node.js · Python · Flask" },
-  { name: "AI applications", tools: "LLM APIs · Streaming · Structured Outputs · Function Calling" },
-  { name: "Quality & delivery", tools: "Testing · Accessibility · CI/CD · Docker · AWS" }
+export const education = [
+  { degree: "Master of Computer Applications", school: "Maharaja Agrasen Himalayan Garhwal University", years: "2020–2022" },
+  { degree: "Bachelor of Computer Applications", school: "IEC University", years: "2015–2018" },
 ];
+
+export type SkillGroup = {
+  name: string;
+  items: string[];
+  evidence: string;
+};
+
+export const skills: SkillGroup[] = [
+  {
+    name: "AI and LLM applications",
+    items: ["OpenAI API", "AWS Bedrock", "Azure OpenAI", "LangChain", "RAG", "Embeddings", "Structured outputs", "Function calling", "Streaming (SSE)"],
+    evidence: "Contracts AI in production; OpsAI and InterviewPilot in the open.",
+  },
+  {
+    name: "Frontend",
+    items: ["React", "Next.js", "TypeScript", "Redux Toolkit", "GraphQL / Apollo", "Micro frontends", "Storybook", "Tailwind CSS", "Angular"],
+    evidence: "Nearly five years of high-traffic React and Next.js at BagConvergence.",
+  },
+  {
+    name: "Backend and APIs",
+    items: ["Python", "FastAPI", "Flask", "Node.js", "NestJS", "REST", "GraphQL", "WebSockets", "JWT"],
+    evidence: "FastAPI for OpsAI and Contracts AI; NestJS for InterviewPilot.",
+  },
+  {
+    name: "Data and retrieval",
+    items: ["PostgreSQL", "pgvector", "Qdrant", "Azure AI Search", "Redis", "MongoDB", "SQLAlchemy", "Prisma"],
+    evidence: "Qdrant in Contracts AI; pgvector in OpsAI.",
+  },
+  {
+    name: "Cloud and delivery",
+    items: ["AWS", "Azure", "Docker", "Kubernetes", "CI/CD", "GitHub Actions"],
+    evidence: "Docker, AWS deployments and CI/CD pipelines across roles.",
+  },
+  {
+    name: "Quality",
+    items: ["Playwright", "Jest", "React Testing Library", "Vitest", "pytest", "Selenium", "Accessibility", "Core Web Vitals"],
+    evidence: "Mobile performance scores above 90 on high-traffic products.",
+  },
+];
+
+export const principles = [
+  {
+    title: "Measure before optimizing.",
+    body: "On performance work I trace the user journey, measure the slow points and move everything non-essential out of the critical path.",
+  },
+  {
+    title: "Keep the model away from permissions.",
+    body: "In OpsAI the API decides who can do what. The agent can only propose; people approve.",
+  },
+  {
+    title: "Make AI behaviour testable.",
+    body: "Deterministic providers mean the same input gives the same output, so CI can check behaviour on every push.",
+  },
+  {
+    title: "Build what the team can keep changing.",
+    body: "A clear boundary is usually worth more than another abstraction — micro frontends and separate services, where they earn their keep.",
+  },
+];
+
+export function getProject(slug: string) {
+  return projects.find(project => project.slug === slug);
+}
+
+export const caseStudies = projects.filter(
+  (project): project is Project & { caseStudy: CaseStudy } => project.caseStudy !== undefined,
+);

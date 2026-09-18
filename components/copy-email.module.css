@@ -1,0 +1,20 @@
+.wrap {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.button {
+  background: transparent;
+  color: inherit;
+  font-family: inherit;
+  cursor: pointer;
+  min-width: 11.5rem;
+  justify-content: center;
+}
+
+.status {
+  font-size: var(--step--1);
+  color: var(--ink-2);
+}

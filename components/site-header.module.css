@@ -1,0 +1,152 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: color-mix(in srgb, var(--paper) 92%, transparent);
+  border-bottom: 1px solid var(--rule);
+  backdrop-filter: saturate(1.4) blur(10px);
+  -webkit-backdrop-filter: saturate(1.4) blur(10px);
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: var(--header-h);
+}
+
+.brand {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+  text-decoration: none;
+}
+
+.name {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.role {
+  font-size: 0.8125rem;
+  color: var(--ink-2);
+}
+
+.brand:hover .name {
+  color: var(--accent);
+}
+
+.desktopNav {
+  display: none;
+}
+
+.desktopNav ul {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin: 0;
+}
+
+.desktopNav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.5rem;
+  padding: 0 0.75rem;
+  font-size: var(--step--1);
+  font-weight: 550;
+  text-decoration: none;
+  border-radius: var(--radius);
+}
+
+.desktopNav .resume {
+  margin-left: 0.5rem;
+  border: 1px solid var(--rule-strong);
+}
+
+.desktopNav .resume:hover {
+  border-color: var(--accent);
+}
+
+.menuButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 2.75rem;
+  padding: 0 0.9rem;
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: var(--step--1);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.menuIcon,
+.menuIcon::before {
+  display: block;
+  width: 14px;
+  height: 1.5px;
+  background: currentColor;
+  transition: transform 150ms ease;
+}
+
+.menuIcon {
+  position: relative;
+  transform: translateY(-3px);
+}
+
+.menuIcon::before {
+  content: "";
+  position: absolute;
+  top: 6px;
+}
+
+.menuIcon[data-open="true"] {
+  transform: translateY(0) rotate(45deg);
+}
+
+.menuIcon[data-open="true"]::before {
+  top: 0;
+  transform: rotate(-90deg);
+}
+
+.panel {
+  border-top: 1px solid var(--rule);
+  background: var(--paper);
+}
+
+.panel ul {
+  margin: 0;
+  padding-block: 0.5rem 1rem;
+}
+
+.panel a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 3rem;
+  font-size: var(--step-1);
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px solid var(--rule);
+}
+
+.fileType {
+  font-size: var(--step--1);
+  font-weight: 500;
+  color: var(--ink-2);
+}
+
+@media (min-width: 48rem) {
+  .desktopNav {
+    display: block;
+  }
+
+  .menuButton,
+  .panel {
+    display: none;
+  }
+}
