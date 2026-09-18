@@ -2,18 +2,31 @@ import Link from "next/link";
 import type { Project } from "@/lib/content";
 import { ExternalLink } from "./external-link";
 import { FlowDiagram } from "./flow-diagram";
+import { Reveal } from "./reveal";
 import styles from "./project-entry.module.css";
 
-export function ProjectEntry({ project }: { project: Project }) {
+export function ProjectEntry({ project, index }: { project: Project; index: number }) {
   const caseStudyHref = project.caseStudy ? `/work/${project.slug}` : undefined;
   const headingId = `project-${project.slug}`;
 
   return (
-    <article className={styles.entry} aria-labelledby={headingId}>
+    <Reveal as="article" className={styles.entry} index={Math.min(index - 1, 2)} step={90} aria-labelledby={headingId}>
       <header className={styles.header}>
-        <p className={styles.context}>{project.context}</p>
+        <p className={styles.meta}>
+          <span className={styles.index}>{String(index).padStart(2, "0")}</span>
+          <span className={styles.context}>{project.context}</span>
+        </p>
         <h3 id={headingId} className={styles.name}>
-          {caseStudyHref ? <Link href={caseStudyHref}>{project.name}</Link> : project.name}
+          {caseStudyHref ? (
+            <Link href={caseStudyHref} className={styles.nameLink}>
+              {project.name}
+              <span className={styles.nameArrow} aria-hidden="true">
+                →
+              </span>
+            </Link>
+          ) : (
+            project.name
+          )}
         </h3>
         <p className={styles.tagline}>{project.tagline}</p>
       </header>
@@ -50,6 +63,6 @@ export function ProjectEntry({ project }: { project: Project }) {
           </div>
         )}
       </footer>
-    </article>
+    </Reveal>
   );
 }

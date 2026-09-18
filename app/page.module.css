@@ -1,16 +1,64 @@
 /* ---------- Hero ---------- */
 .hero {
-  padding-block: clamp(3.5rem, 10vw, 7.5rem) clamp(3rem, 7vw, 5rem);
+  position: relative;
+  padding-block: clamp(3.5rem, 10vw, 7rem) clamp(2.5rem, 6vw, 4rem);
 }
 
-.intro {
-  font-weight: 600;
+/* A quiet drafting grid behind the hero only — the site's one deliberate
+   texture moment, faded out before it reaches the fold below. */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: -1.5rem 0 auto 0;
+  height: 26rem;
+  z-index: -1;
+  opacity: 0.55;
+  background-image:
+    linear-gradient(var(--rule) 1px, transparent 1px),
+    linear-gradient(90deg, var(--rule) 1px, transparent 1px);
+  background-size: 42px 42px;
+  -webkit-mask-image: linear-gradient(to bottom, black, transparent 82%);
+  mask-image: linear-gradient(to bottom, black, transparent 82%);
+}
+
+.heroMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1.5rem;
+  font-family: var(--font-code);
+  font-size: 0.8125rem;
   color: var(--ink-2);
 }
 
+.heroIdentity {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.heroMark {
+  width: 1.5rem;
+  height: 0.6rem;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.heroRole {
+  font-weight: 500;
+  color: var(--ink-2);
+}
+
+.heroWhere {
+  white-space: nowrap;
+}
+
 .heroTitle {
-  max-width: 21ch;
-  margin-top: 1.25rem;
+  max-width: 22ch;
+  margin-top: 1.5rem;
   font-size: clamp(2.25rem, 1.1rem + 4.2vw, 4.75rem);
   font-weight: 700;
   line-height: 1.04;
@@ -40,35 +88,56 @@
   padding-inline: 0.25rem;
 }
 
-.proof {
+.metrics {
   display: grid;
   gap: 0;
   margin-top: clamp(3rem, 7vw, 4.5rem);
   padding: 0;
-  list-style: none;
   border-top: 1px solid var(--ink);
 }
 
-.proof li {
-  padding-block: 1rem;
-  font-weight: 550;
-  line-height: 1.4;
+.metric {
+  padding-block: 1.25rem;
 }
 
-.proof li + li {
+.metric + .metric {
   border-top: 1px solid var(--rule);
 }
 
+.metricValue {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  font-family: var(--font-code);
+  font-size: var(--step-2);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+.metricUnit {
+  font-size: var(--step--1);
+  font-weight: 500;
+  color: var(--ink-2);
+}
+
+.metric dd {
+  margin-top: 0.3rem;
+  max-width: 34ch;
+  font-size: var(--step--1);
+  color: var(--ink-2);
+}
+
 @media (min-width: 48rem) {
-  .proof {
+  .metrics {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  .proof li {
-    padding: 1.25rem 1.5rem 0 0;
+  .metric {
+    padding: 1.5rem 1.5rem 0 0;
   }
 
-  .proof li + li {
+  .metric + .metric {
     border-top: 0;
     padding-left: 1.5rem;
     border-left: 1px solid var(--rule);
@@ -78,31 +147,46 @@
 /* The page's one orchestrated moment: the hero settles in on first load. */
 @media (prefers-reduced-motion: no-preference) {
   .hero > * {
-    animation: rise 700ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    animation: hero-rise 750ms var(--ease-out) both;
+  }
+
+  .hero > :nth-child(1) {
+    animation-delay: 0ms;
   }
 
   .hero > :nth-child(2) {
-    animation-delay: 60ms;
+    animation-delay: 90ms;
   }
 
   .hero > :nth-child(3) {
-    animation-delay: 140ms;
+    animation-delay: 190ms;
   }
 
   .hero > :nth-child(4) {
-    animation-delay: 200ms;
+    animation-delay: 280ms;
   }
 
   .hero > :nth-child(5) {
-    animation-delay: 280ms;
+    animation-delay: 360ms;
   }
 }
 
-@keyframes rise {
+@keyframes hero-rise {
   from {
     opacity: 0;
-    transform: translateY(12px);
+    clip-path: inset(0 0 100% 0);
+    transform: translateY(14px);
   }
+  to {
+    opacity: 1;
+    clip-path: inset(0 0 0% 0);
+    transform: translateY(0);
+  }
+}
+
+/* ---------- Capability bridge ---------- */
+.capability {
+  padding-block: 0 clamp(2.5rem, 6vw, 4rem);
 }
 
 /* ---------- Work ---------- */

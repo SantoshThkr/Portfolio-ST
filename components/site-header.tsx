@@ -3,10 +3,12 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { nav, site } from "@/lib/site";
+import { NodeMark } from "./node-mark";
 import styles from "./site-header.module.css";
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
+  const [active, setActive] = useState<string | null>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
 
@@ -37,23 +39,51 @@ export function SiteHeader() {
     };
   }, [open]);
 
+  // Marks the nav item for whichever section is currently nearest the
+  // middle of the viewport. Purely a wayfinding aid — nothing depends on
+  // it being right, so no fallback logic is needed if the page has no
+  // matching sections (e.g. a case-study page).
+  useEffect(() => {
+    const ids = nav.map(item => item.href.split("#")[1]).filter((id): id is string => Boolean(id));
+    const sections = ids.map(id => document.getElementById(id)).filter((el): el is HTMLElement => el !== null);
+    if (sections.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      entries => {
+        const visible = entries.filter(entry => entry.isIntersecting);
+        if (visible.length > 0) setActive(visible[0]!.target.id);
+      },
+      { rootMargin: "-45% 0px -50% 0px", threshold: 0 },
+    );
+    sections.forEach(section => observer.observe(section));
+    return () => observer.disconnect();
+  }, []);
+
   const close = () => setOpen(false);
 
   return (
     <header className={`site-header ${styles.header}`}>
       <div className={`container ${styles.inner}`}>
         <Link href="/" className={styles.brand} onClick={close}>
-          <span className={styles.name}>{site.name}</span>
-          <span className={styles.role}>{site.role}</span>
+          <NodeMark className={styles.mark} />
+          <span className={styles.brandText}>
+            <span className={styles.name}>{site.name}</span>
+            <span className={styles.role}>{site.role}</span>
+          </span>
         </Link>
 
         <nav aria-label="Primary" className={styles.desktopNav}>
           <ul role="list">
-            {nav.map(item => (
-              <li key={item.href}>
-                <Link href={item.href}>{item.label}</Link>
-              </li>
-            ))}
+            {nav.map(item => {
+              const id = item.href.split("#")[1];
+              return (
+                <li key={item.href}>
+                  <Link href={item.href} aria-current={active === id ? "location" : undefined}>
+                    {item.label}
+                  </Link>
+                </li>
+              );
+            })}
             <li>
               <a href={site.resume} className={styles.resume}>
                 Résumé <span className="visually-hidden">(PDF)</span>

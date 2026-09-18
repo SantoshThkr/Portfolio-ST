@@ -9,6 +9,18 @@ export const sans = localFont({
   display: "swap",
 });
 
+// The italic cut of the same family, used sparingly for a handful of
+// editorial moments (case-study pull quotes). Not preloaded — it only
+// costs a request on pages that actually render `.voice` text.
+export const sansItalic = localFont({
+  src: "../node_modules/@fontsource-variable/schibsted-grotesk/files/schibsted-grotesk-latin-wght-italic.woff2",
+  variable: "--font-sans-italic",
+  weight: "400 900",
+  style: "italic",
+  display: "swap",
+  preload: false,
+});
+
 export const mono = localFont({
   src: "../node_modules/@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2",
   variable: "--font-mono",

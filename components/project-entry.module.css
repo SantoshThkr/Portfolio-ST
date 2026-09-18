@@ -1,7 +1,21 @@
-.entry {
+/* The element-plus-class selector (rather than plain .entry) deliberately
+   out-specifies the shared `.reveal` rule in globals.css, so this single
+   list — not that one — governs the transition on this element. It still
+   includes opacity/transform with the same reveal timing, just merged
+   alongside the hover-only properties below. See the note in globals.css. */
+article.entry {
   display: grid;
   gap: 1.75rem;
   padding-block: clamp(2.5rem, 5vw, 3.5rem);
+  border-left: 2px solid transparent;
+  margin-left: -1.25rem;
+  padding-left: 1.15rem;
+  transition:
+    opacity var(--duration-base) var(--ease-out) var(--reveal-delay, 0ms),
+    transform var(--duration-base) var(--ease-out) var(--reveal-delay, 0ms),
+    border-color 260ms var(--ease-out),
+    padding-left 260ms var(--ease-out),
+    margin-left 260ms var(--ease-out);
 }
 
 .entry + .entry {
@@ -12,14 +26,64 @@
   padding-top: 0;
 }
 
+.entry:hover,
+.entry:focus-within {
+  border-left-color: var(--accent);
+  padding-left: 1.5rem;
+  margin-left: -1.6rem;
+}
+
+@media (max-width: 30rem) {
+  /* Matches article.entry's own specificity so this actually wins here —
+     a plain .entry selector would lose to the base rule above. */
+  article.entry {
+    margin-left: 0;
+    padding-left: 0.9rem;
+  }
+
+  .entry:hover,
+  .entry:focus-within {
+    margin-left: 0;
+    padding-left: 1.15rem;
+  }
+}
+
 .header {
   display: grid;
   gap: 0.5rem;
 }
 
-.context {
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
   font-size: var(--step--1);
   color: var(--ink-2);
+}
+
+.index {
+  font-family: var(--font-code);
+  font-size: 0.75rem;
+  font-weight: 600;
+  /* ink-2, not ink-3: this is real text and needs to clear 4.5:1. */
+  color: var(--ink-2);
+  letter-spacing: 0.04em;
+}
+
+.context {
+  position: relative;
+  padding-left: 0.85rem;
+}
+
+.context::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.4em;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--rule-strong);
 }
 
 .name {
@@ -27,13 +91,31 @@
   letter-spacing: -0.03em;
 }
 
-.name a {
+.nameLink {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.3rem;
   text-decoration: none;
 }
 
-.name a:hover {
+.nameLink:hover {
   text-decoration: underline;
   text-decoration-thickness: 2px;
+}
+
+.nameArrow {
+  display: inline-block;
+  font-size: 0.6em;
+  color: var(--accent);
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: opacity 200ms var(--ease-out), transform 200ms var(--ease-out);
+}
+
+.entry:hover .nameArrow,
+.entry:focus-within .nameArrow {
+  opacity: 1;
+  transform: none;
 }
 
 .tagline {

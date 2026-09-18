@@ -45,6 +45,9 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
   const index = caseStudies.indexOf(project);
   const next = caseStudies[(index + 1) % caseStudies.length];
   const url = `${site.url}/work/${project.slug}`;
+  // Numbers the document's own running index, independent of the home
+  // page's section numbers — each page reads as its own spec sheet.
+  let sectionNumber = 2;
 
   const structuredData = {
     "@context": "https://schema.org",
@@ -114,6 +117,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
 
       <section className="section" aria-labelledby="architecture-title">
         <div className="container">
+          <p className="eyebrow">01 — Architecture</p>
           <h2 id="architecture-title" className={styles.h2}>
             Architecture
           </h2>
@@ -122,14 +126,17 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
         </div>
       </section>
 
-      <Section id="problem" title="The problem">
+      <Section id="problem" title="The problem" index={sectionNumber++}>
         <div className={styles.prose}>
           <p>{caseStudy.problem}</p>
-          <p className="muted">{caseStudy.why}</p>
         </div>
+        <blockquote className={styles.whyQuote}>
+          <p className="voice">{caseStudy.why}</p>
+          <cite className={styles.whyCite}>Why I built it this way</cite>
+        </blockquote>
       </Section>
 
-      <Section id="built" title="What I built">
+      <Section id="built" title="What I built" index={sectionNumber++}>
         <dl className={styles.pairs}>
           {caseStudy.built.map(item => (
             <div key={item.title}>
@@ -140,7 +147,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
         </dl>
       </Section>
 
-      <Section id="decisions" title="Key decisions">
+      <Section id="decisions" title="Key decisions" index={sectionNumber++}>
         <ul role="list" className={styles.decisions}>
           {caseStudy.decisions.map(item => (
             <li key={item.title}>
@@ -179,7 +186,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
       </Section>
 
       {caseStudy.quality && (
-        <Section id="quality" title="Testing and CI">
+        <Section id="quality" title="Testing and CI" index={sectionNumber++}>
           <ul className={styles.list}>
             {caseStudy.quality.map(item => (
               <li key={item}>{item}</li>
@@ -188,8 +195,8 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
         </Section>
       )}
 
-      <Section id="limits" title="Limits and what's next">
-        <ul className={styles.list}>
+      <Section id="limits" title="Limits and what's next" index={sectionNumber++}>
+        <ul className={`${styles.list} ${styles.limitsList}`}>
           {caseStudy.limits.map(item => (
             <li key={item}>{item}</li>
           ))}
@@ -215,11 +222,22 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
   );
 }
 
-function Section({ id, title, children }: { id: string; title: string; children: React.ReactNode }) {
+function Section({
+  id,
+  title,
+  index,
+  children,
+}: {
+  id: string;
+  title: string;
+  index: number;
+  children: React.ReactNode;
+}) {
   return (
     <section className="section" aria-labelledby={`${id}-title`}>
       <div className="container section-grid">
         <div className="section-title">
+          <p className="eyebrow">{`${String(index).padStart(2, "0")} — ${title}`}</p>
           <h2 id={`${id}-title`}>{title}</h2>
         </div>
         <div>{children}</div>

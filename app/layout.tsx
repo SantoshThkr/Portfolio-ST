@@ -4,8 +4,14 @@ import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { education, skills } from "@/lib/content";
 import { site } from "@/lib/site";
-import { mono, sans } from "./fonts";
+import { mono, sans, sansItalic } from "./fonts";
 import "./globals.css";
+
+// Arms scroll-reveal before first paint — but only when JS actually runs
+// and the OS has not asked for reduced motion. See the `.reveal` rules in
+// globals.css: without this class, every `.reveal` element is fully
+// visible, so nothing can ever depend on this script to be seen.
+const armRevealScript = `if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){document.documentElement.classList.add('reveal-armed')}`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -56,11 +62,13 @@ const person = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en-IN" className={`${sans.variable} ${mono.variable}`}>
+    <html lang="en-IN" className={`${sans.variable} ${sansItalic.variable} ${mono.variable}`}>
       <body>
+        <script dangerouslySetInnerHTML={{ __html: armRevealScript }} />
         <a href="#main" className="skip-link">
           Skip to content
         </a>
+        <div className="scroll-progress" aria-hidden="true" />
         <SiteHeader />
         <main id="main" tabIndex={-1}>
           {children}

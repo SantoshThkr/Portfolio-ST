@@ -420,6 +420,49 @@ export const skills: SkillGroup[] = [
   },
 ];
 
+/**
+ * The hero's metrics ledger. Each number is stated elsewhere in this file
+ * (experience points, the Contracts AI summary) — this just gives the
+ * three strongest ones a typographic moment of their own.
+ */
+export const metrics = [
+  {
+    value: "5M+",
+    unit: "daily users",
+    detail: "React and Next.js applications built and maintained in production.",
+  },
+  {
+    value: "200K+",
+    unit: "concurrent users",
+    detail: "WebSocket-based real-time dashboards, built to run at that scale.",
+  },
+  {
+    value: "5",
+    unit: "weeks",
+    detail: "From an empty repository to production for a RAG platform on contracts.",
+  },
+] as const;
+
+/**
+ * One signature diagram for the hero, built from the same six groups as
+ * `skills` below — read as a pipeline instead of a list. Quality closes it
+ * as a gate, the same way auth and approvals gate the project diagrams:
+ * nothing here ships without it.
+ */
+export const capabilityFlow: FlowPath[] = [
+  {
+    name: "",
+    steps: [
+      { label: "Interface", detail: "React, Next.js" },
+      { label: "APIs", detail: "FastAPI, NestJS" },
+      { label: "Retrieval", detail: "pgvector, Qdrant" },
+      { label: "Intelligence", detail: "Bedrock, RAG" },
+      { label: "Infrastructure", detail: "AWS, Docker" },
+      { label: "Quality", detail: "Playwright, pytest", gate: true },
+    ],
+  },
+];
+
 export const principles = [
   {
     title: "Measure before optimizing.",

@@ -1,30 +1,47 @@
 import { CopyEmail } from "@/components/copy-email";
 import { ExternalLink } from "@/components/external-link";
+import { FlowDiagram } from "@/components/flow-diagram";
+import { LocalTime } from "@/components/local-time";
+import { NodeMark } from "@/components/node-mark";
 import { ProjectEntry } from "@/components/project-entry";
-import { education, experience, otherWork, principles, projects, skills } from "@/lib/content";
+import { Reveal } from "@/components/reveal";
+import {
+  capabilityFlow,
+  education,
+  experience,
+  metrics,
+  otherWork,
+  principles,
+  projects,
+  skills,
+} from "@/lib/content";
 import { site } from "@/lib/site";
 import styles from "./page.module.css";
-
-const proof = [
-  "Took a RAG platform for contracts from zero to production in five weeks.",
-  "Built React and Next.js apps serving 5M+ daily users.",
-  "Built real-time dashboards for 200K+ concurrent users.",
-];
 
 export default function HomePage() {
   return (
     <>
       <section className={`container ${styles.hero}`} aria-labelledby="hero-title">
-        <p className={styles.intro}>
-          {site.name}, full-stack AI engineer in {site.location.city}, {site.location.country}
+        <p className={styles.heroMeta}>
+          <span className={styles.heroIdentity}>
+            <NodeMark className={styles.heroMark} />
+            {site.name} <span className={styles.heroRole}>— {site.role}</span>
+          </span>
+          <span className={styles.heroWhere}>
+            <LocalTime timeZone="Asia/Kolkata" label={`${site.location.city}, ${site.location.country}`} />
+          </span>
         </p>
+
         <h1 id="hero-title" className={styles.heroTitle}>
-          I build AI applications end to end, from the React interface to the retrieval pipeline and APIs behind it.
+          I build AI applications end to end — the interface, the retrieval pipeline, and the APIs that hold them
+          together.
         </h1>
+
         <p className={styles.lead}>
           Six years of production web engineering, now focused on LLM features that behave like the rest of the
           system: authenticated, streamed, cited and tested.
         </p>
+
         <div className={styles.actions}>
           <a href="#work" className="button button-primary">
             See selected work
@@ -36,24 +53,45 @@ export default function HomePage() {
             Résumé (PDF)
           </a>
         </div>
-        <ul className={styles.proof} aria-label="Highlights">
-          {proof.map(item => (
-            <li key={item}>{item}</li>
+
+        <dl className={styles.metrics} aria-label="Highlights">
+          {metrics.map(item => (
+            <div key={item.unit} className={styles.metric}>
+              <dt className={styles.metricValue}>
+                {item.value}
+                <span className={styles.metricUnit}>{item.unit}</span>
+              </dt>
+              <dd>{item.detail}</dd>
+            </div>
           ))}
-        </ul>
+        </dl>
+      </section>
+
+      <section className={styles.capability} aria-label="What I build, layer by layer">
+        <div className="container">
+          <FlowDiagram
+            paths={capabilityFlow}
+            title="Capability map"
+            note="Every layer here has shipped — in the platform below, or in production."
+            gateLabel="Every layer ships with its own tests, not just a demo."
+            compact
+            hidePathNames
+          />
+        </div>
       </section>
 
       <section id="work" className="section" aria-labelledby="work-title">
         <div className="container section-grid">
           <div className="section-title">
+            <p className="eyebrow">01 — Selected work</p>
             <h2 id="work-title">Selected work</h2>
             <p>One production system and two open-source builds, each with its real architecture.</p>
           </div>
           <div>
-            {projects.map(project => (
-              <ProjectEntry key={project.slug} project={project} />
+            {projects.map((project, index) => (
+              <ProjectEntry key={project.slug} project={project} index={index + 1} />
             ))}
-            <div className={styles.other}>
+            <Reveal as="div" className={styles.other}>
               <h3 className={styles.subheading}>Other professional work</h3>
               <dl className={styles.otherList}>
                 {otherWork.map(item => (
@@ -63,7 +101,7 @@ export default function HomePage() {
                   </div>
                 ))}
               </dl>
-            </div>
+            </Reveal>
           </div>
         </div>
       </section>
@@ -71,12 +109,13 @@ export default function HomePage() {
       <section id="experience" className="section" aria-labelledby="experience-title">
         <div className="container section-grid">
           <div className="section-title">
+            <p className="eyebrow">02 — Experience</p>
             <h2 id="experience-title">Experience</h2>
             <p>6+ years across enterprise delivery, high-traffic products and AI applications.</p>
           </div>
           <ol role="list" className={styles.roles}>
-            {experience.map(role => (
-              <li key={role.company} className={styles.role}>
+            {experience.map((role, index) => (
+              <Reveal key={role.company} as="li" className={styles.role} index={index}>
                 <p className={styles.period}>
                   <time dateTime={role.startIso}>{role.start}</time> – <time dateTime={role.endIso}>{role.end}</time>
                 </p>
@@ -95,7 +134,7 @@ export default function HomePage() {
                     ))}
                   </ul>
                 </div>
-              </li>
+              </Reveal>
             ))}
           </ol>
         </div>
@@ -104,16 +143,17 @@ export default function HomePage() {
       <section id="skills" className="section" aria-labelledby="skills-title">
         <div className="container section-grid">
           <div className="section-title">
+            <p className="eyebrow">03 — Skills</p>
             <h2 id="skills-title">Skills</h2>
             <p>Grouped by where they sit in a system, with where I&apos;ve used them.</p>
           </div>
           <dl className={styles.skills}>
-            {skills.map(group => (
-              <div key={group.name} className={styles.skillRow}>
+            {skills.map((group, index) => (
+              <Reveal key={group.name} as="div" className={styles.skillRow} index={index} step={45}>
                 <dt className={styles.skillName}>{group.name}</dt>
                 <dd className={styles.skillItems}>{group.items.join(", ")}</dd>
                 <dd className={styles.skillEvidence}>{group.evidence}</dd>
-              </div>
+              </Reveal>
             ))}
           </dl>
         </div>
@@ -122,16 +162,17 @@ export default function HomePage() {
       <section id="approach" className="section" aria-labelledby="approach-title">
         <div className="container section-grid">
           <div className="section-title">
+            <p className="eyebrow">04 — How I work</p>
             <h2 id="approach-title">How I work</h2>
             <p>A few habits, each backed by something I&apos;ve built.</p>
           </div>
           <div className={styles.approach}>
             <ul role="list" className={styles.principles}>
-              {principles.map(item => (
-                <li key={item.title}>
+              {principles.map((item, index) => (
+                <Reveal key={item.title} as="li" index={index} step={50}>
                   <h3 className={styles.principleTitle}>{item.title}</h3>
                   <p className="muted">{item.body}</p>
-                </li>
+                </Reveal>
               ))}
             </ul>
             <div>
@@ -154,6 +195,7 @@ export default function HomePage() {
       <section id="contact" className="section" aria-labelledby="contact-title">
         <div className="container section-grid">
           <div className="section-title">
+            <p className="eyebrow">05 — Contact</p>
             <h2 id="contact-title">Contact</h2>
           </div>
           <div className={styles.contact}>

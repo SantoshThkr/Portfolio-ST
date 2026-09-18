@@ -6,12 +6,15 @@
   --surface: #ffffff;
   --ink: #13233a;
   --ink-2: #4b5870;
+  --ink-3: #7c869a;
   --rule: #d6dae0;
   --rule-strong: #a9b1be;
   --accent: #2f3fe4;
+  --accent-strong: #1f2ab8;
   --accent-soft: #e7e9fd;
 
   --font-body: var(--font-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-voice: var(--font-sans-italic), var(--font-sans), ui-sans-serif, system-ui, sans-serif;
   --font-code: var(--font-mono), ui-monospace, "SFMono-Regular", Menlo, monospace;
 
   --step--1: 0.875rem;
@@ -26,6 +29,9 @@
   --measure: 66ch;
   --radius: 6px;
   --header-h: 4rem;
+
+  --ease-out: cubic-bezier(0.16, 0.8, 0.24, 1);
+  --duration-base: 550ms;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -34,9 +40,11 @@
     --surface: #141d2d;
     --ink: #e7ebf2;
     --ink-2: #a3aec2;
+    --ink-3: #6e7996;
     --rule: #253146;
     --rule-strong: #40506d;
     --accent: #9ea8ff;
+    --accent-strong: #c3caff;
     --accent-soft: #1d2652;
   }
 }
@@ -72,6 +80,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-wrap: break-word;
+  overflow-x: clip;
 }
 
 h1,
@@ -177,6 +186,37 @@ svg {
   color: var(--ink-2);
 }
 
+/* An italic cut of the display face, reserved for a small number of
+   editorial moments (case-study pull quotes). Used sparingly on purpose. */
+.voice {
+  font-family: var(--font-voice);
+  font-style: italic;
+  font-weight: 460;
+}
+
+/* The mono, tracked-out label that opens every major section: a small,
+   consistent wayfinding device that reads like a document's running index. */
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-bottom: 0.85rem;
+  font-family: var(--font-code);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.eyebrow::before {
+  content: "";
+  width: 1.25rem;
+  height: 1px;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+
 /* Section with a title rail on wide screens. */
 .section {
   padding-block: clamp(3.5rem, 8vw, 6.5rem);
@@ -230,7 +270,11 @@ svg {
   font-weight: 600;
   font-size: var(--step--1);
   text-decoration: none;
-  transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
+  transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease, transform 150ms var(--ease-out);
+}
+
+.button:active {
+  transform: translateY(1px);
 }
 
 .button-primary {
@@ -242,10 +286,12 @@ svg {
   background: var(--accent);
   border-color: var(--accent);
   color: var(--paper);
+  transform: translateY(-1px);
 }
 
 .button-secondary:hover {
   border-color: var(--accent);
+  transform: translateY(-1px);
 }
 
 .text-link {
@@ -269,6 +315,67 @@ svg {
   color: var(--ink-2);
 }
 
+/* ---------- Scroll reveal ---------- */
+/* Default state is fully visible: content must never depend on JS to be
+   seen. A tiny inline script in <body> (see layout.tsx) adds `reveal-armed`
+   to <html> before first paint, but only when JS runs AND the OS has not
+   asked for reduced motion — so the hidden-then-revealed state only ever
+   exists for visitors who can actually see the reveal happen. */
+/* Declared on the plain `.reveal` class (not the higher-specificity
+   `:root.reveal-armed .reveal` below) so a component that also needs its
+   own hover transition — see .entry in project-entry.module.css — can
+   win the cascade with one merged, higher-specificity `transition` list
+   instead of silently losing this one outright (transition doesn't merge
+   across rules; whichever rule's shorthand wins applies in full). */
+.reveal {
+  transition: opacity var(--duration-base) var(--ease-out), transform var(--duration-base) var(--ease-out);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+:root.reveal-armed .reveal {
+  opacity: 0;
+  transform: translateY(14px);
+}
+
+:root.reveal-armed .reveal[data-visible="true"] {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- Scroll progress ---------- */
+/* Pure CSS, no scroll listener: driven by the scroll-timeline spec where
+   supported, invisible (not just static) everywhere else. */
+.scroll-progress {
+  display: none;
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: 2px;
+  z-index: 70;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  pointer-events: none;
+}
+
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .scroll-progress {
+      display: block;
+      animation: scroll-progress-grow linear both;
+      animation-timeline: scroll(root);
+    }
+  }
+}
+
+@keyframes scroll-progress-grow {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -281,7 +388,8 @@ svg {
 
 @media print {
   .site-header,
-  .skip-link {
+  .skip-link,
+  .scroll-progress {
     display: none !important;
   }
 }

@@ -51,11 +51,27 @@
   border: 1px solid var(--accent);
   border-radius: 4px;
   background: var(--surface);
+  transition: border-color 180ms ease, background-color 180ms ease, transform 180ms var(--ease-out);
 }
 
 .step[data-gate] {
   background: var(--accent-soft);
   border-style: dashed;
+}
+
+.step[tabindex] {
+  cursor: default;
+}
+
+.step[tabindex]:hover,
+.step[tabindex]:focus-visible {
+  border-color: var(--ink);
+  transform: translateY(-1px);
+}
+
+.figure[data-compact="true"] .step[tabindex]:hover,
+.figure[data-compact="true"] .step[tabindex]:focus-visible {
+  border-style: solid;
 }
 
 .step:not(:last-child)::after {
@@ -81,6 +97,35 @@
   font-size: 0.75rem;
   line-height: 1.35;
   color: var(--ink-2);
+}
+
+/* Compact mode (home page): the detail is in the DOM and reachable by
+   screen readers regardless of visual state — it's only ever visually
+   faded, never removed — and appears on hover or keyboard focus. Its
+   line height is reserved at all times so revealing it never nudges
+   neighbouring steps in the same row. A reward for exploring, not a
+   requirement for reading it. */
+.detailCompact {
+  display: block;
+  opacity: 0;
+  transform: translateY(-2px);
+  font-family: var(--font-code);
+  font-size: 0.75rem;
+  line-height: 1.35;
+  color: var(--ink-2);
+  transition: opacity 180ms ease, transform 180ms var(--ease-out);
+}
+
+.step[tabindex]:hover .detailCompact,
+.step[tabindex]:focus-visible .detailCompact {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .detailCompact {
+    transition: none;
+  }
 }
 
 /* ----- Horizontal layout when the figure itself is wide enough ----- */

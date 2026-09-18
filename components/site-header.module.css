@@ -18,9 +18,27 @@
 
 .brand {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  gap: 0.7rem;
   line-height: 1.2;
   text-decoration: none;
+}
+
+.mark {
+  width: 1.75rem;
+  height: 0.7rem;
+  color: var(--ink-3);
+  transition: color 200ms ease;
+  flex-shrink: 0;
+}
+
+.brand:hover .mark {
+  color: var(--accent);
+}
+
+.brandText {
+  display: flex;
+  flex-direction: column;
 }
 
 .name {
@@ -49,6 +67,7 @@
 }
 
 .desktopNav a {
+  position: relative;
   display: inline-flex;
   align-items: center;
   min-height: 2.5rem;
@@ -57,6 +76,28 @@
   font-weight: 550;
   text-decoration: none;
   border-radius: var(--radius);
+}
+
+.desktopNav a:not(.resume)::after {
+  content: "";
+  position: absolute;
+  left: 0.75rem;
+  right: 0.75rem;
+  bottom: 0.35rem;
+  height: 1.5px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform 200ms var(--ease-out);
+}
+
+.desktopNav a:hover::after,
+.desktopNav a[aria-current="location"]::after {
+  transform: scaleX(1);
+}
+
+.desktopNav a[aria-current="location"] {
+  color: var(--accent);
 }
 
 .desktopNav .resume {

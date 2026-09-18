@@ -26,3 +26,25 @@
   min-height: 2.75rem;
   text-decoration: none;
 }
+
+.identity {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.mark {
+  width: 1.5rem;
+  height: 0.6rem;
+  color: var(--ink-3);
+  flex-shrink: 0;
+}
+
+.top {
+  /* ink-2, not ink-3: this is a real link and needs to clear 4.5:1. */
+  color: var(--ink-2);
+}
+
+.top:hover {
+  color: var(--accent);
+}
