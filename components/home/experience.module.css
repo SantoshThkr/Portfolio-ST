@@ -1,0 +1,154 @@
+.experience {
+  padding-block: clamp(6rem, 16vh, 10rem) clamp(4rem, 10vh, 6rem);
+}
+
+.head {
+  display: grid;
+  gap: 1.25rem;
+  max-width: 40rem;
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-top: clamp(3rem, 8vh, 5rem);
+  border-top: 1px solid var(--line-strong);
+}
+
+.metrics > div {
+  padding: 1.75rem 1.5rem 0 0;
+}
+
+.metrics > div + div {
+  padding-left: 1.5rem;
+  border-left: 1px solid var(--line);
+}
+
+.metrics dt {
+  font-stretch: 125%;
+  font-weight: 520;
+  font-size: clamp(2.5rem, 1.4rem + 3.2vw, 4.25rem);
+  letter-spacing: -0.04em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.metrics dd {
+  display: grid;
+  gap: 0.35rem;
+  margin-top: 0.9rem;
+}
+
+.metricLabel {
+  font-weight: 560;
+}
+
+.metricContext {
+  font-size: var(--text-sm);
+  line-height: 1.45;
+  color: var(--ink-2);
+}
+
+.roles {
+  margin: clamp(4rem, 10vh, 6rem) 0 0;
+}
+
+.role {
+  display: grid;
+  grid-template-columns: 14rem minmax(0, 1fr);
+  gap: 2rem;
+  padding-block: 2.5rem;
+  border-top: 1px solid var(--line);
+}
+
+.period {
+  padding-top: 0.55rem;
+  font-family: var(--font-mono);
+  font-stretch: 87.5%;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.body {
+  display: grid;
+  gap: 0.75rem;
+  max-width: 44rem;
+}
+
+.company {
+  font-size: var(--text-xl);
+  font-stretch: 118%;
+  font-weight: 560;
+  letter-spacing: -0.02em;
+}
+
+.title {
+  margin-top: -0.35rem;
+  font-family: var(--font-mono);
+  font-stretch: 87.5%;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--signal);
+}
+
+.summary {
+  color: var(--ink-2);
+}
+
+.points {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0.25rem 0 0.5rem;
+  padding: 0;
+  list-style: none;
+}
+
+.points li {
+  position: relative;
+  padding-left: 1.4rem;
+  font-size: 0.9375rem;
+}
+
+.points li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.66em;
+  width: 0.6rem;
+  height: 1px;
+  background: var(--ink-3);
+}
+
+@media (max-width: 64rem) {
+  .metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .metrics > div:nth-child(3) {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .metrics > div:nth-child(n + 3) {
+    border-top: 1px solid var(--line);
+    margin-top: 1.75rem;
+  }
+}
+
+@media (max-width: 40rem) {
+  .metrics > div {
+    padding-right: 0.75rem;
+  }
+
+  .metrics > div + div {
+    padding-left: 0.75rem;
+  }
+
+  .role {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+}

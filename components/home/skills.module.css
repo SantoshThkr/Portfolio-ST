@@ -1,0 +1,115 @@
+.skills {
+  display: flex;
+  align-items: center;
+  min-height: 100svh;
+  padding-block: clamp(6rem, 16vh, 10rem);
+}
+
+.head {
+  display: grid;
+  gap: 1.25rem;
+  max-width: min(36rem, 46vw);
+}
+
+.rows {
+  max-width: min(36rem, 46vw);
+  margin: 3rem 0 0;
+  border-top: 1px solid var(--line);
+}
+
+.row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 2.5rem minmax(0, 1fr);
+  gap: 1rem;
+  padding-block: 1.1rem;
+  border-bottom: 1px solid var(--line);
+  cursor: default;
+}
+
+.row::before {
+  content: "";
+  position: absolute;
+  left: -1rem;
+  top: -1px;
+  bottom: -1px;
+  width: 2px;
+  background: var(--signal);
+  transform: scaleY(0);
+  transition: transform 350ms var(--ease-out);
+}
+
+.index {
+  padding-top: 0.2rem;
+  font-family: var(--font-mono);
+  font-stretch: 87.5%;
+  font-size: 0.6875rem;
+  color: var(--ink-3);
+  transition: color 250ms ease;
+}
+
+.name {
+  font-size: var(--text-lg);
+  font-stretch: 112%;
+  font-weight: 560;
+}
+
+.items {
+  margin-top: 0.35rem;
+  font-size: 0.9375rem;
+  color: var(--ink-2);
+  transition: color 250ms ease;
+}
+
+.evidence {
+  margin-top: 0.4rem;
+  font-size: 0.8125rem;
+  color: var(--ink-3);
+  transition: color 250ms ease;
+}
+
+/* A row is lit by hovering it, focusing within it, or hovering its layer in
+   the 3D scene (the scene writes data-hover-layer on the section). */
+.row:hover::before,
+.skills[data-hover-layer="interface"] .row[data-layer="interface"]::before,
+.skills[data-hover-layer="api"] .row[data-layer="api"]::before,
+.skills[data-hover-layer="data"] .row[data-layer="data"]::before,
+.skills[data-hover-layer="model"] .row[data-layer="model"]::before,
+.skills[data-hover-layer="infra"] .row[data-layer="infra"]::before {
+  transform: scaleY(1);
+}
+
+.row:hover .index,
+.skills[data-hover-layer="interface"] .row[data-layer="interface"] .index,
+.skills[data-hover-layer="api"] .row[data-layer="api"] .index,
+.skills[data-hover-layer="data"] .row[data-layer="data"] .index,
+.skills[data-hover-layer="model"] .row[data-layer="model"] .index,
+.skills[data-hover-layer="infra"] .row[data-layer="infra"] .index {
+  color: var(--signal);
+}
+
+.row:hover .items,
+.skills[data-hover-layer="interface"] .row[data-layer="interface"] .items,
+.skills[data-hover-layer="api"] .row[data-layer="api"] .items,
+.skills[data-hover-layer="data"] .row[data-layer="data"] .items,
+.skills[data-hover-layer="model"] .row[data-layer="model"] .items,
+.skills[data-hover-layer="infra"] .row[data-layer="infra"] .items {
+  color: var(--ink);
+}
+
+.row:hover .evidence,
+.skills[data-hover-layer="interface"] .row[data-layer="interface"] .evidence,
+.skills[data-hover-layer="api"] .row[data-layer="api"] .evidence,
+.skills[data-hover-layer="data"] .row[data-layer="data"] .evidence,
+.skills[data-hover-layer="model"] .row[data-layer="model"] .evidence,
+.skills[data-hover-layer="infra"] .row[data-layer="infra"] .evidence {
+  color: var(--ink-2);
+}
+
+
+@media (max-width: 56rem) {
+  .rows,
+  .head {
+    max-width: none;
+  }
+}

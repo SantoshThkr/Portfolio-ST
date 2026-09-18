@@ -1,6 +1,7 @@
 import { site } from "@/lib/site";
 import { ExternalLink } from "./external-link";
-import { NodeMark } from "./node-mark";
+import { LocalTime } from "./local-time";
+import { StackMark } from "./stack-mark";
 import styles from "./site-footer.module.css";
 
 export function SiteFooter() {
@@ -8,8 +9,13 @@ export function SiteFooter() {
     <footer className={styles.footer}>
       <div className={`container ${styles.inner}`}>
         <p className={styles.identity}>
-          <NodeMark className={styles.mark} />
-          {site.name}, {site.location.city}, {site.location.country}
+          <StackMark className={styles.mark} />
+          <span>
+            {site.name} · {site.location.city}, {site.location.country}
+            <span className={styles.time}>
+              <LocalTime timeZone={site.location.timeZone} prefix=" · " />
+            </span>
+          </span>
         </p>
         <ul role="list" className={styles.links}>
           <li>
@@ -25,9 +31,7 @@ export function SiteFooter() {
             <a href={site.resume}>Résumé (PDF)</a>
           </li>
           <li>
-            <a href="#main" className={styles.top}>
-              Back to top
-            </a>
+            <a href="#main">Back to top</a>
           </li>
         </ul>
       </div>

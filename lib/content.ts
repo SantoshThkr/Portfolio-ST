@@ -1,10 +1,84 @@
 /**
  * Portfolio content.
  *
- * Every claim here comes from one of three sources: the résumé in /public,
- * the previous version of this site, or the public GitHub repositories.
- * Keep it that way — if something can't be traced to a source, leave it out.
+ * Every claim here traces to one of three sources: the résumé in /public,
+ * earlier versions of this site (git history), or the public GitHub
+ * repositories. If something can't be traced to a source, it stays out.
  */
+
+/* ---------------------------------------------------------------------------
+ * The stack
+ *
+ * The site is organised around one idea: an AI product is a stack of
+ * layers, and the work is building all of them. The 3D scene, the
+ * "anatomy" walkthrough, the project configurations and the skills map
+ * all use these same five layers.
+ * ------------------------------------------------------------------------- */
+
+export type LayerId = "interface" | "api" | "data" | "model" | "infra";
+
+export const layers: { id: LayerId; name: string }[] = [
+  { id: "interface", name: "Interface" },
+  { id: "api", name: "API" },
+  { id: "data", name: "Data & retrieval" },
+  { id: "model", name: "Model" },
+  { id: "infra", name: "Infrastructure" },
+];
+
+/* ---------------------------------------------------------------------------
+ * Anatomy of a request — the scroll-driven walkthrough.
+ * Each step names the project(s) where it was actually built.
+ * ------------------------------------------------------------------------- */
+
+export type AnatomyStep = {
+  layer: LayerId | "quality";
+  title: string;
+  body: string;
+  seenIn: string[];
+};
+
+export const anatomy: AnatomyStep[] = [
+  {
+    layer: "interface",
+    title: "A question arrives.",
+    body: "It lands in a React or Next.js interface built to stream, so the answer can start rendering before the model has finished writing it.",
+    seenIn: ["Contracts AI", "OpsAI", "InterviewPilot"],
+  },
+  {
+    layer: "api",
+    title: "The API decides who is asking.",
+    body: "Authentication, rate limits and role checks live in the service, never in the browser. In OpsAI the agent can only propose a change — the API decides whether it happens.",
+    seenIn: ["Contracts AI", "OpsAI"],
+  },
+  {
+    layer: "data",
+    title: "Retrieval finds the evidence.",
+    body: "Documents are chunked, embedded and indexed in the background — in Qdrant or pgvector — and in OpsAI a similarity threshold has to pass before anything is cited.",
+    seenIn: ["Contracts AI", "OpsAI"],
+  },
+  {
+    layer: "model",
+    title: "The model writes from that evidence.",
+    body: "Intent routing decides how a question is handled. Output is structured JSON wherever the app needs fields rather than prose, and an agent can only call typed, allowlisted tools.",
+    seenIn: ["Contracts AI", "OpsAI", "InterviewPilot"],
+  },
+  {
+    layer: "interface",
+    title: "The answer streams back with its sources.",
+    body: "Tokens arrive over server-sent events, and the answer carries citations to the exact pages it drew on — including answers built from several pages.",
+    seenIn: ["Contracts AI"],
+  },
+  {
+    layer: "quality",
+    title: "Then it has to survive production.",
+    body: "Containers, CI on every push, and tests that check behaviour. Deterministic model providers mean the pipeline runs without a paid API key.",
+    seenIn: ["OpsAI"],
+  },
+];
+
+/* ---------------------------------------------------------------------------
+ * Projects
+ * ------------------------------------------------------------------------- */
 
 export type FlowStep = {
   label: string;
@@ -40,12 +114,16 @@ export type CaseStudy = {
 export type Project = {
   slug: string;
   name: string;
-  context: string;
+  status: string;
   tagline: string;
   summary: string;
   highlights: string[];
+  /** A few hard facts, each stated elsewhere in this file or the résumé. */
+  facts: { value: string; label: string }[];
   stack: string[];
   repo?: string;
+  /** What this project put on each layer — drives the 3D configuration. Empty layers stay dark. */
+  components: Partial<Record<LayerId, string[]>>;
   flow: FlowPath[];
   flowNote: string;
   caseStudy?: CaseStudy;
@@ -54,17 +132,27 @@ export type Project = {
 export const projects: Project[] = [
   {
     slug: "contracts-ai",
-    name: "Internal Contracts AI",
-    context: "Professional work, internal platform",
+    name: "Contracts AI",
+    status: "In production · internal",
     tagline: "Question answering over contract documents, with answers that cite the pages they came from.",
     summary:
-      "A retrieval-augmented Q&A platform for contracts that I took from an empty repository to production in five weeks. It is internal, so there is no public source or demo — the details below are the ones I can share.",
+      "A retrieval-augmented Q&A platform for contracts that I took from an empty repository to production in five weeks. It's internal, so there's no public source or demo — these are the details I can share.",
     highlights: [
-      "Answers stream to the browser over server-sent events and carry citations back to specific pages, including answers that draw on several pages.",
-      "Documents are indexed asynchronously and deduplicated, so uploads don't block requests and repeated files don't pollute retrieval.",
+      "Answers stream to the browser over server-sent events and cite specific pages, including answers that draw on several pages.",
+      "Documents are indexed asynchronously and deduplicated, so uploads never block a request and repeated files don't pollute retrieval.",
       "Intent-based routing decides how each question is handled, behind a JWT-secured FastAPI service.",
     ],
+    facts: [
+      { value: "5 weeks", label: "empty repo to production" },
+      { value: "Multi-page", label: "citations per answer" },
+    ],
     stack: ["Python", "FastAPI", "LangChain", "AWS Bedrock", "Qdrant", "PostgreSQL", "SSE", "JWT"],
+    components: {
+      interface: ["Streamed answers", "Page citations"],
+      api: ["FastAPI", "JWT", "Intent routing"],
+      data: ["Qdrant", "Async indexing", "Dedup"],
+      model: ["LangChain", "Bedrock"],
+    },
     flow: [
       {
         name: "Indexing",
@@ -92,18 +180,30 @@ export const projects: Project[] = [
   {
     slug: "opsai",
     name: "OpsAI",
-    context: "Independent project, open source",
+    status: "Open source",
     tagline:
-      "An operations assistant that answers from your documents and metrics, and can propose actions but never take one without an admin's approval.",
+      "An operations assistant that answers from your documents and metrics — and can propose actions, but never take one without an admin's approval.",
     summary:
       "OpsAI grounds answers in uploaded documents and recorded service metrics, and lets its agent propose incidents through a controlled approval workflow. It runs entirely on local, deterministic providers, so development and CI need no paid model API.",
     highlights: [
       "Owner-scoped RAG over PDF, TXT and Markdown, with a similarity threshold that has to pass before any citation is shown.",
       "The agent can call only four typed, allowlisted tools. A change becomes a proposal; an admin approves it; execution is idempotent and written to an audit log.",
-      "Viewer, analyst and admin roles are enforced in the API, never the frontend — including through an authenticated MCP-style JSON-RPC adapter that reuses the same services.",
+      "Viewer, analyst and admin roles are enforced in the API, never the frontend — including through an authenticated MCP-style JSON-RPC adapter.",
+    ],
+    facts: [
+      { value: "4", label: "allowlisted agent tools" },
+      { value: "3", label: "roles enforced in the API" },
+      { value: "0", label: "paid API calls in CI" },
     ],
     stack: ["Next.js", "TypeScript", "FastAPI", "SQLAlchemy", "PostgreSQL", "pgvector", "Redis", "Docker", "GitHub Actions"],
     repo: "https://github.com/SantoshThkr/ops-ai",
+    components: {
+      interface: ["Next.js chat", "SSE"],
+      api: ["FastAPI", "RBAC", "Approvals"],
+      data: ["pgvector", "Redis worker"],
+      model: ["Deterministic agent", "4 tools"],
+      infra: ["Docker Compose", "GitHub Actions"],
+    },
     flow: [
       {
         name: "Ingest",
@@ -178,11 +278,11 @@ export const projects: Project[] = [
         },
         {
           title: "Logs that help an investigation without leaking",
-          body: "Structured logs carry request IDs, operation, user, status and durations, and never credentials, tokens, cookies, API keys or document contents.",
+          body: "Structured logs carry request IDs, operation, user, status and durations — and never credentials, tokens, cookies, API keys or document contents.",
         },
         {
           title: "Evaluate behaviour, not invented scores",
-          body: "An offline evaluator checks knowledge gating, metrics, the incident lifecycle, idempotency, RBAC and MCP requests, and reports expected versus actual behaviour. It is regression testing, not LLM quality scoring.",
+          body: "An offline evaluator checks knowledge gating, metrics, the incident lifecycle, idempotency, RBAC and MCP requests, and reports expected versus actual behaviour. It's regression testing, not LLM quality scoring.",
         },
       ],
       quality: [
@@ -211,17 +311,28 @@ export const projects: Project[] = [
   {
     slug: "interviewpilot",
     name: "InterviewPilot",
-    context: "Independent project, open source",
+    status: "Open source",
     tagline: "Mock interviews built from your own résumé, streamed in real time, with a coding round and a scored report.",
     summary:
-      "Upload a résumé, choose a role, difficulty and interviewer style, and InterviewPilot runs a streaming interview that follows up on your answers. It ends with a report, and the weak areas it finds feed into your next session.",
+      "Upload a résumé, choose a role, difficulty and interviewer style, and InterviewPilot runs a streaming interview that follows up on your answers. It ends with a report — and the weak areas it finds feed into your next session.",
     highlights: [
       "A NestJS and Prisma API separate from the Next.js app; interviewer replies stream back over server-sent events.",
       "Résumé analysis and reports use JSON-mode structured output, stored in PostgreSQL alongside transcripts and per-user weak areas.",
       "A Monaco coding round runs JavaScript and TypeScript against test cases in a node:vm context with a 250 ms timeout and a blocklist for unsafe APIs.",
     ],
+    facts: [
+      { value: "5", label: "interview types" },
+      { value: "8", label: "interviewer personalities" },
+      { value: "250 ms", label: "code execution timeout" },
+    ],
     stack: ["Next.js", "React", "TypeScript", "Clerk", "NestJS", "Prisma", "PostgreSQL", "OpenAI API"],
     repo: "https://github.com/SantoshThkr/InterviewPilot",
+    components: {
+      interface: ["Next.js", "Monaco", "Voice mode"],
+      api: ["NestJS", "Clerk auth", "SSE"],
+      data: ["PostgreSQL", "Prisma"],
+      model: ["OpenAI stream", "JSON mode"],
+    },
     flow: [
       {
         name: "Setup",
@@ -257,7 +368,7 @@ export const projects: Project[] = [
       role: "Independent build across the Next.js app, NestJS API and PostgreSQL schema.",
       why: "I wanted interview practice built around a candidate's actual background instead of a fixed question list.",
       problem:
-        "Generic interview prep doesn't adapt to a candidate's résumé, target role or weak areas. Practice is most useful when the questions come from what you've actually done, and when the next session knows where the last one went badly.",
+        "Generic interview prep doesn't adapt to a candidate's résumé, target role or weak areas. Practice is most useful when the questions come from what you've actually done — and when the next session knows where the last one went badly.",
       built: [
         {
           title: "Interview flow",
@@ -299,23 +410,42 @@ export const projects: Project[] = [
         },
       ],
       limits: [
-        "Code execution uses node:vm with pattern checks and a short timeout. That is reasonable for a practice tool running JavaScript and TypeScript, but it is not a hardened sandbox — Judge0 or Piston integration for other languages is on the roadmap.",
+        "Code execution uses node:vm with pattern checks and a short timeout. That's reasonable for a practice tool running JavaScript and TypeScript, but it is not a hardened sandbox — Judge0 or Piston integration for other languages is on the roadmap.",
         "Also on the roadmap: fullscreen exam mode, WebRTC video, company-specific question banks and peer mock interviews.",
       ],
     },
   },
 ];
 
-export const otherWork = [
+export const alsoShipped = [
   {
     name: "AI chat platform",
-    body: "Chat interfaces on OpenAI APIs with streamed responses, reusable React components, secure REST integration and prompt work to improve answer quality.",
+    body: "Chat interfaces on OpenAI APIs with streamed responses, reusable React components, secure REST integration, and prompt work to improve answer quality.",
   },
   {
     name: "Headless CMS entertainment platform",
     body: "A Next.js front end on WordPress VIP, with automated content workflows, optimized image delivery and SEO.",
   },
 ];
+
+export function getProject(slug: string) {
+  return projects.find(project => project.slug === slug);
+}
+
+export const caseStudies = projects.filter(
+  (project): project is Project & { caseStudy: CaseStudy } => project.caseStudy !== undefined,
+);
+
+/* ---------------------------------------------------------------------------
+ * Experience
+ * ------------------------------------------------------------------------- */
+
+export const metrics = [
+  { value: "5M+", label: "daily users", context: "React and Next.js products at BagConvergence" },
+  { value: "200K+", label: "concurrent users", context: "on WebSocket real-time dashboards" },
+  { value: "50%+", label: "performance gain", context: "through code splitting, lazy loading, caching and memoization" },
+  { value: "90+", label: "mobile performance score", context: "via Core Web Vitals work" },
+] as const;
 
 export type Role = {
   company: string;
@@ -340,7 +470,7 @@ export const experience: Role[] = [
     endIso: "2026-04",
     summary: "Enterprise applications across React, Python and AI-enabled workflows.",
     points: [
-      "Built enterprise applications with React, TypeScript, Python and FastAPI, and integrated them with REST APIs and backend services.",
+      "Built enterprise applications with React, TypeScript, Python and FastAPI, integrated with REST APIs and backend services.",
       "Worked with RAG, document processing and vector search patterns for enterprise use cases.",
       "Added automated testing with Playwright and Selenium, and improved performance, accessibility and reliability.",
     ],
@@ -348,7 +478,7 @@ export const experience: Role[] = [
   },
   {
     company: "BagConvergence",
-    title: "Software Developer",
+    title: "Software Developer — Full-Stack Engineer",
     start: "Mar 2021",
     end: "Nov 2025",
     startIso: "2021-03",
@@ -356,12 +486,12 @@ export const experience: Role[] = [
     summary: "High-traffic React and Next.js products, from shared foundations to real-time systems.",
     points: [
       "Built and maintained React and Next.js applications serving 5M+ daily users across multiple products.",
-      "Built reusable component libraries and micro frontends so business modules could be developed and deployed independently.",
+      "Designed architecture spanning frontend systems, API integration, real-time communication and cloud services.",
+      "Built reusable component libraries and micro frontends so business modules could ship independently.",
       "Built WebSocket-based real-time dashboards supporting 200K+ concurrent users.",
-      "Improved application performance by over 50% with code splitting, lazy loading, memoization, caching and image optimization, and reached mobile performance scores above 90.",
-      "Integrated GraphQL and REST APIs, and contributed to Python backend integrations, Docker-based services, AWS deployments and CI/CD pipelines.",
+      "Improved performance by over 50% and reached mobile performance scores above 90.",
     ],
-    stack: ["React", "Next.js", "TypeScript", "GraphQL", "WebSockets", "Micro frontends", "AWS"],
+    stack: ["React", "Next.js", "TypeScript", "GraphQL", "WebSockets", "Micro frontends", "Docker", "AWS"],
   },
   {
     company: "ModernVastu Research & Remedy",
@@ -381,7 +511,12 @@ export const education = [
   { degree: "Bachelor of Computer Applications", school: "IEC University", years: "2015–2018" },
 ];
 
+/* ---------------------------------------------------------------------------
+ * Skills, mapped onto the same layers as everything else.
+ * ------------------------------------------------------------------------- */
+
 export type SkillGroup = {
+  layer: LayerId | "quality";
   name: string;
   items: string[];
   evidence: string;
@@ -389,84 +524,56 @@ export type SkillGroup = {
 
 export const skills: SkillGroup[] = [
   {
-    name: "AI and LLM applications",
-    items: ["OpenAI API", "AWS Bedrock", "Azure OpenAI", "LangChain", "RAG", "Embeddings", "Structured outputs", "Function calling", "Streaming (SSE)"],
-    evidence: "Contracts AI in production; OpsAI and InterviewPilot in the open.",
-  },
-  {
-    name: "Frontend",
+    layer: "interface",
+    name: "Interface",
     items: ["React", "Next.js", "TypeScript", "Redux Toolkit", "GraphQL / Apollo", "Micro frontends", "Storybook", "Tailwind CSS", "Angular"],
     evidence: "Nearly five years of high-traffic React and Next.js at BagConvergence.",
   },
   {
-    name: "Backend and APIs",
-    items: ["Python", "FastAPI", "Flask", "Node.js", "NestJS", "REST", "GraphQL", "WebSockets", "JWT"],
+    layer: "api",
+    name: "API",
+    items: ["Python", "FastAPI", "Flask", "Node.js", "NestJS", "REST", "GraphQL", "WebSockets", "SSE", "JWT"],
     evidence: "FastAPI for OpsAI and Contracts AI; NestJS for InterviewPilot.",
   },
   {
-    name: "Data and retrieval",
+    layer: "data",
+    name: "Data & retrieval",
     items: ["PostgreSQL", "pgvector", "Qdrant", "Azure AI Search", "Redis", "MongoDB", "SQLAlchemy", "Prisma"],
     evidence: "Qdrant in Contracts AI; pgvector in OpsAI.",
   },
   {
-    name: "Cloud and delivery",
+    layer: "model",
+    name: "Model",
+    items: ["OpenAI API", "AWS Bedrock", "Azure OpenAI", "LangChain", "RAG", "Embeddings", "Structured outputs", "Function calling"],
+    evidence: "Bedrock in production for Contracts AI; OpenAI for InterviewPilot.",
+  },
+  {
+    layer: "infra",
+    name: "Infrastructure",
     items: ["AWS", "Azure", "Docker", "Kubernetes", "CI/CD", "GitHub Actions"],
     evidence: "Docker, AWS deployments and CI/CD pipelines across roles.",
   },
   {
+    layer: "quality",
     name: "Quality",
     items: ["Playwright", "Jest", "React Testing Library", "Vitest", "pytest", "Selenium", "Accessibility", "Core Web Vitals"],
-    evidence: "Mobile performance scores above 90 on high-traffic products.",
+    evidence: "Wraps every layer — mobile performance scores above 90 on high-traffic products.",
   },
 ];
 
-/**
- * The hero's metrics ledger. Each number is stated elsewhere in this file
- * (experience points, the Contracts AI summary) — this just gives the
- * three strongest ones a typographic moment of their own.
- */
-export const metrics = [
-  {
-    value: "5M+",
-    unit: "daily users",
-    detail: "React and Next.js applications built and maintained in production.",
-  },
-  {
-    value: "200K+",
-    unit: "concurrent users",
-    detail: "WebSocket-based real-time dashboards, built to run at that scale.",
-  },
-  {
-    value: "5",
-    unit: "weeks",
-    detail: "From an empty repository to production for a RAG platform on contracts.",
-  },
-] as const;
+/* ---------------------------------------------------------------------------
+ * About
+ * ------------------------------------------------------------------------- */
 
-/**
- * One signature diagram for the hero, built from the same six groups as
- * `skills` below — read as a pipeline instead of a list. Quality closes it
- * as a gate, the same way auth and approvals gate the project diagrams:
- * nothing here ships without it.
- */
-export const capabilityFlow: FlowPath[] = [
-  {
-    name: "",
-    steps: [
-      { label: "Interface", detail: "React, Next.js" },
-      { label: "APIs", detail: "FastAPI, NestJS" },
-      { label: "Retrieval", detail: "pgvector, Qdrant" },
-      { label: "Intelligence", detail: "Bedrock, RAG" },
-      { label: "Infrastructure", detail: "AWS, Docker" },
-      { label: "Quality", detail: "Playwright, pytest", gate: true },
-    ],
-  },
+export const about = [
+  "I started on the front end in 2019, building responsive React apps, then spent nearly five years at BagConvergence on React and Next.js products used by millions of people a day — component libraries, micro frontends, real-time dashboards, and a lot of performance work.",
+  "More and more, my work has moved down the stack and into AI: FastAPI and NestJS services, retrieval pipelines, and LLM features that are held to the same bar as the rest of the system.",
 ];
 
 export const principles = [
   {
     title: "Measure before optimizing.",
-    body: "On performance work I trace the user journey, measure the slow points and move everything non-essential out of the critical path.",
+    body: "On performance work I trace the user journey, measure the slow points, and move everything non-essential out of the critical path.",
   },
   {
     title: "Keep the model away from permissions.",
@@ -482,10 +589,17 @@ export const principles = [
   },
 ];
 
-export function getProject(slug: string) {
-  return projects.find(project => project.slug === slug);
-}
+/* ---------------------------------------------------------------------------
+ * The slice of content the 3D scene needs, kept small because it's
+ * serialized into the page for the client.
+ * ------------------------------------------------------------------------- */
 
-export const caseStudies = projects.filter(
-  (project): project is Project & { caseStudy: CaseStudy } => project.caseStudy !== undefined,
-);
+export type SceneConfig = {
+  layers: { id: LayerId; name: string }[];
+  projects: { slug: string; components: Partial<Record<LayerId, string[]>> }[];
+};
+
+export const sceneConfig: SceneConfig = {
+  layers,
+  projects: projects.map(({ slug, components }) => ({ slug, components })),
+};

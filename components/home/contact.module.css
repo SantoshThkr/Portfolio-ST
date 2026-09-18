@@ -1,0 +1,71 @@
+.contact {
+  display: flex;
+  align-items: center;
+  min-height: 100svh;
+  padding-block: clamp(6rem, 16vh, 10rem);
+}
+
+.inner {
+  display: grid;
+  gap: 1.75rem;
+  max-width: min(44rem, 54vw);
+}
+
+.title {
+  font-size: clamp(2.4rem, 1rem + 4.4vw, 4.75rem);
+  font-stretch: 120%;
+}
+
+.lead {
+  max-width: 34rem;
+  font-size: var(--text-lg);
+  color: var(--ink-2);
+}
+
+.emailRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem 1.5rem;
+  margin-top: 0.5rem;
+}
+
+.email {
+  max-width: 100%;
+  font-size: var(--text-xl);
+  font-stretch: 112%;
+  font-weight: 560;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+  background: linear-gradient(var(--signal), var(--signal)) 0 100% / 100% 1px no-repeat;
+  padding-bottom: 0.15rem;
+  transition:
+    color 200ms ease,
+    background-size 400ms var(--ease-out);
+}
+
+.email:hover {
+  background-size: 100% 2px;
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 0.5rem 0 0;
+}
+
+@media (max-width: 56rem) {
+  .contact {
+    align-items: flex-end;
+    padding-top: 42svh;
+  }
+}
+
+
+@media (max-width: 56rem) {
+  .inner {
+    max-width: none;
+  }
+}

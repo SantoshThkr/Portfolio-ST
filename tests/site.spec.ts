@@ -2,6 +2,14 @@ import { expect, test, type Page } from "@playwright/test";
 
 const pages = ["/", "/work/opsai", "/work/interviewpilot"];
 
+/** The scene only runs on hardware-accelerated WebGL2; CI machines often have none. */
+async function hasHardwareWebGL(page: Page) {
+  return page.evaluate(() => {
+    const gl = document.createElement("canvas").getContext("webgl2", { failIfMajorPerformanceCaveat: true });
+    return gl !== null;
+  });
+}
+
 function collectErrors(page: Page) {
   const errors: string[] = [];
   page.on("console", message => message.type() === "error" && errors.push(message.text()));
@@ -20,6 +28,8 @@ for (const path of pages) {
     for (let i = 1; i < levels.length; i++) {
       expect(levels[i]! - levels[i - 1]!, `heading jump at index ${i}`).toBeLessThanOrEqual(1);
     }
+    // Give the lazily loaded 3D scene time to boot, so its errors count too.
+    await page.waitForTimeout(1500);
     expect(errors).toEqual([]);
   });
 
@@ -79,6 +89,14 @@ test("résumé PDF and contact email work", async ({ page, request }) => {
   expect(response.ok()).toBeTruthy();
   expect(response.headers()["content-type"]).toContain("application/pdf");
   await expect(page.locator('#contact a[href^="mailto:"]').first()).toHaveAttribute("href", /^mailto:[^@]+@[^@]+\.[^@]+$/);
+});
+
+test("the portrait is served, sized and described", async ({ page }) => {
+  await page.goto("/");
+  const portrait = page.locator("#about img");
+  await portrait.scrollIntoViewIfNeeded();
+  await expect(portrait).toHaveAttribute("alt", /Santosh Thakur/);
+  await expect.poll(() => portrait.evaluate(img => (img as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
 });
 
 test("skip link moves focus to main content", async ({ page, browserName }) => {
@@ -153,11 +171,90 @@ test("security headers are set", async ({ request }) => {
   expect(headers["x-powered-by"]).toBeUndefined();
 });
 
-test("reduced motion disables the hero animation", async ({ browser }) => {
+/* ------------------------------------------------------------------ */
+/* Motion and the 3D layer                                            */
+/* ------------------------------------------------------------------ */
+
+test("the hero headline animates in, unless reduced motion is requested", async ({ browser }) => {
+  const lines = (page: Page) =>
+    page.locator("#hero-title > span > span").evaluateAll(nodes => nodes.map(node => getComputedStyle(node).animationName));
+
+  const moving = await browser.newContext({ reducedMotion: "no-preference" });
+  const a = await moving.newPage();
+  await a.goto("/");
+  expect(await lines(a)).not.toContain("none");
+  await moving.close();
+
+  const still = await browser.newContext({ reducedMotion: "reduce" });
+  const b = await still.newPage();
+  await b.goto("/");
+  expect(new Set(await lines(b))).toEqual(new Set(["none"]));
+  await still.close();
+});
+
+test("the 3D scene boots, stays decorative, and is hidden from assistive tech", async ({ page }) => {
+  await page.goto("/");
+  test.skip(!(await hasHardwareWebGL(page)), "no hardware WebGL here — covered by the fallback test");
+  await expect(page.locator("html")).toHaveClass(/scene-ready/, { timeout: 10_000 });
+  const stage = page.locator("canvas").locator("..");
+  await expect(stage).toHaveAttribute("aria-hidden", "true");
+  await expect.poll(() => page.locator("canvas").evaluate(c => Number(getComputedStyle(c).opacity))).toBeGreaterThan(0.5);
+});
+
+test("the canvas persists across client-side navigation", async ({ page }) => {
+  await page.goto("/");
+  test.skip(!(await hasHardwareWebGL(page)), "no hardware WebGL here — covered by the fallback test");
+  await expect(page.locator("html")).toHaveClass(/scene-ready/, { timeout: 10_000 });
+  await page.locator("canvas").evaluate(canvas => (canvas.dataset.marker = "first"));
+  await page.locator('a[href="/work/opsai"]').last().click();
+  await expect(page).toHaveURL(/\/work\/opsai$/);
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("OpsAI");
+  expect(await page.locator("canvas").evaluate(canvas => canvas.dataset.marker)).toBe("first");
+});
+
+test("reduced motion: the scene renders but does not move", async ({ browser }) => {
   const context = await browser.newContext({ reducedMotion: "reduce" });
   const page = await context.newPage();
   await page.goto("/");
-  const animation = await page.locator("#hero-title").evaluate(node => getComputedStyle(node).animationName);
-  expect(animation).toBe("none");
+  test.skip(!(await hasHardwareWebGL(page)), "no hardware WebGL here — covered by the fallback test");
+  await expect(page.locator("html")).toHaveClass(/scene-ready/, { timeout: 10_000 });
+  await page.waitForTimeout(800);
+  const first = await page.locator("canvas").screenshot();
+  await page.waitForTimeout(2000);
+  const second = await page.locator("canvas").screenshot();
+  expect(Buffer.compare(first, second)).toBe(0);
+  await context.close();
+});
+
+test("without WebGL the page falls back cleanly", async ({ browser }) => {
+  const context = await browser.newContext();
+  await context.addInitScript(() => {
+    const original = HTMLCanvasElement.prototype.getContext;
+    // @ts-expect-error — narrowing the overloads isn't useful in a test stub.
+    HTMLCanvasElement.prototype.getContext = function (type: string, ...rest: unknown[]) {
+      if (type.startsWith("webgl")) return null;
+      return original.call(this, type, ...rest);
+    };
+  });
+  const page = await context.newPage();
+  const errors = collectErrors(page);
+  await page.goto("/");
+  await expect(page.locator("html")).toHaveClass(/no-webgl/);
+  await expect(page.locator("#hero-title")).toBeVisible();
+  await expect(page.locator("section[data-scene='hero'] svg").last()).toBeVisible();
+  await page.waitForTimeout(800);
+  expect(errors).toEqual([]);
+  await context.close();
+});
+
+test("without JavaScript every section is fully visible", async ({ browser }) => {
+  const context = await browser.newContext({ javaScriptEnabled: false });
+  const page = await context.newPage();
+  await page.goto("/");
+  const hidden = await page
+    .locator("[data-reveal]")
+    .evaluateAll(nodes => nodes.filter(node => Number(getComputedStyle(node).opacity) < 1).length);
+  expect(hidden).toBe(0);
+  await expect(page.getByRole("heading", { name: "Anatomy of an AI request" })).toBeVisible();
   await context.close();
 });

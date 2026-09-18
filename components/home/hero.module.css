@@ -1,0 +1,297 @@
+.hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 100svh;
+  padding-top: calc(var(--header-h) + clamp(1.5rem, 5vh, 4rem));
+}
+
+.inner {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.copy {
+  position: relative;
+  max-width: min(50rem, 56vw);
+}
+
+.kicker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.9rem;
+  font-family: var(--font-mono);
+  font-stretch: 87.5%;
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--signal);
+  box-shadow: 0 0 0 4px rgb(255 138 61 / 0.15);
+}
+
+.title {
+  margin-top: 1.75rem;
+  font-size: clamp(2.6rem, 1rem + 5vw, 5.75rem);
+  font-stretch: 122%;
+}
+
+.line {
+  display: block;
+  overflow: hidden;
+  /* Room for descenders inside the clipping box. */
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+
+.line > span {
+  display: block;
+}
+
+.accent {
+  color: var(--signal);
+}
+
+.lead {
+  max-width: 34rem;
+  margin-top: 2rem;
+  font-size: var(--text-lg);
+  line-height: 1.55;
+  color: var(--ink-2);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 2.5rem;
+}
+
+.fallback {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  width: min(34rem, 42vw);
+  translate: 0 -50%;
+}
+
+:global(html:not(.js)) .fallback,
+:global(.no-webgl) .fallback {
+  display: block;
+}
+
+.footRow {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+  padding-top: 3rem;
+  padding-bottom: 1.75rem;
+}
+
+.proof {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 13rem));
+  gap: 2rem;
+  border-top: 1px solid var(--line);
+  padding-top: 1.25rem;
+}
+
+.proof dt {
+  font-stretch: 118%;
+  font-weight: 560;
+  font-size: var(--text-xl);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.proof dd {
+  margin-top: 0.35rem;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--ink-2);
+}
+
+.scrollCue {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--font-mono);
+  font-stretch: 87.5%;
+  font-size: 0.625rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  writing-mode: vertical-rl;
+}
+
+.cueLine {
+  position: relative;
+  width: 1px;
+  height: 3.5rem;
+  background: var(--line);
+  overflow: hidden;
+}
+
+.cueLine::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--signal);
+  transform: translateY(-100%);
+}
+
+/* The first-load moment: the headline rises line by line out of its own
+   baseline while the stack assembles behind it. */
+@media (prefers-reduced-motion: no-preference) {
+  .kicker,
+  .actions,
+  .footRow {
+    animation: fade-up 1000ms var(--ease-out) both;
+  }
+
+  /* Visible from the first paint (it's the largest text block, so it's what
+     LCP measures on phones) — it only settles into place. */
+  .lead {
+    animation: settle 1000ms var(--ease-out) both;
+  }
+
+  .kicker {
+    animation-delay: 100ms;
+  }
+
+  .lead {
+    animation-delay: 650ms;
+  }
+
+  .actions {
+    animation-delay: 780ms;
+  }
+
+  .footRow {
+    animation-delay: 950ms;
+  }
+
+  .line > span {
+    animation: line-up 1100ms var(--ease-out) both;
+  }
+
+  .line:nth-child(1) > span {
+    animation-delay: 220ms;
+  }
+
+  .line:nth-child(2) > span {
+    animation-delay: 320ms;
+  }
+
+  .line:nth-child(3) > span {
+    animation-delay: 420ms;
+  }
+
+  .cueLine::after {
+    animation: cue 2.4s var(--ease-in-out) 1.6s infinite;
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+@keyframes settle {
+  from {
+    transform: translateY(10px);
+  }
+}
+
+@keyframes line-up {
+  from {
+    transform: translateY(105%);
+  }
+}
+
+@keyframes cue {
+  0% {
+    transform: translateY(-100%);
+  }
+  60%,
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+@media (max-width: 56rem) {
+  .hero {
+    /* Leave the upper part of the screen to the stack. */
+    padding-top: calc(var(--header-h) + 44svh);
+    justify-content: flex-start;
+  }
+
+  .inner {
+    flex: none;
+  }
+
+  .proof {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .proof > div {
+    display: grid;
+    grid-template-columns: 5.5rem 1fr;
+    align-items: baseline;
+    gap: 1rem;
+  }
+
+  .scrollCue {
+    display: none;
+  }
+
+  .fallback {
+    top: calc(var(--header-h) + 1rem);
+    left: 50%;
+    right: auto;
+    width: min(26rem, 88vw);
+    translate: -50% 0;
+    position: fixed;
+  }
+}
+
+:global(html:not(.js)) .hero,
+:global(.no-webgl) .hero {
+  padding-top: calc(var(--header-h) + clamp(2rem, 7vh, 5rem));
+}
+
+@media (max-width: 56rem) {
+  :global(html:not(.js)) .fallback,
+  :global(.no-webgl) .fallback {
+    position: static;
+    translate: none;
+    margin: 0 auto 2rem;
+  }
+
+  :global(html:not(.js)) .inner,
+  :global(.no-webgl) .inner {
+    flex-direction: column-reverse;
+  }
+}
+
+
+@media (max-width: 56rem) {
+  .copy {
+    max-width: none;
+  }
+}

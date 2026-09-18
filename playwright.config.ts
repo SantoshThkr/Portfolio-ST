@@ -13,8 +13,11 @@ export default defineConfig({
     reuseExistingServer: !process.env.CI,
     timeout: 180_000,
   },
+  // Full Chromium (new headless) rather than the headless shell: it uses a
+  // real GPU when the machine has one, so the 3D scene is actually exercised.
+  // On GPU-less machines the scene tests skip and the fallback tests still run.
   projects: [
-    { name: "desktop", use: { ...devices["Desktop Chrome"] } },
-    { name: "mobile", use: { ...devices["Pixel 7"] } },
+    { name: "desktop", use: { ...devices["Desktop Chrome"], channel: "chromium" } },
+    { name: "mobile", use: { ...devices["Pixel 7"], channel: "chromium" } },
   ],
 });

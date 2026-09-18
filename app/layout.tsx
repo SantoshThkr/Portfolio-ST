@@ -1,17 +1,18 @@
 import type { Metadata, Viewport } from "next";
 import { JsonLd } from "@/components/json-ld";
+import { RevealObserver } from "@/components/reveal-observer";
+import { SceneRoot } from "@/components/scene/scene-root";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
-import { education, skills } from "@/lib/content";
+import { education, sceneConfig, skills } from "@/lib/content";
 import { site } from "@/lib/site";
-import { mono, sans, sansItalic } from "./fonts";
+import { mono, sans } from "./fonts";
 import "./globals.css";
 
-// Arms scroll-reveal before first paint — but only when JS actually runs
-// and the OS has not asked for reduced motion. See the `.reveal` rules in
-// globals.css: without this class, every `.reveal` element is fully
-// visible, so nothing can ever depend on this script to be seen.
-const armRevealScript = `if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){document.documentElement.classList.add('reveal-armed')}`;
+// Runs before first paint. `js` says scripts are running; `motion-ok` arms
+// the reveal-on-scroll starting states, and only when the visitor hasn't
+// asked for reduced motion. Without either class, everything is visible.
+const bootScript = `(function(){var d=document.documentElement;d.classList.add('js');if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){d.classList.add('motion-ok')}})()`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -35,10 +36,8 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f5f6f4" },
-    { media: "(prefers-color-scheme: dark)", color: "#0e1522" },
-  ],
+  themeColor: "#0b0c0e",
+  colorScheme: "dark",
 };
 
 const person = {
@@ -47,6 +46,7 @@ const person = {
   "@id": `${site.url}/#person`,
   name: site.name,
   url: site.url,
+  image: `${site.url}${site.portrait.src}`,
   email: `mailto:${site.email}`,
   jobTitle: "Full-Stack AI Engineer",
   address: {
@@ -62,18 +62,25 @@ const person = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en-IN" className={`${sans.variable} ${sansItalic.variable} ${mono.variable}`}>
+    <html
+      lang="en-IN"
+      className={`${sans.variable} ${mono.variable}`}
+      data-scroll-behavior="smooth"
+      suppressHydrationWarning
+    >
       <body>
-        <script dangerouslySetInnerHTML={{ __html: armRevealScript }} />
+        <script dangerouslySetInnerHTML={{ __html: bootScript }} />
         <a href="#main" className="skip-link">
           Skip to content
         </a>
         <div className="scroll-progress" aria-hidden="true" />
+        <SceneRoot config={sceneConfig} />
         <SiteHeader />
         <main id="main" tabIndex={-1}>
           {children}
         </main>
         <SiteFooter />
+        <RevealObserver />
         <JsonLd data={person} />
       </body>
     </html>

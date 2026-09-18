@@ -3,12 +3,10 @@
 import { useEffect, useState } from "react";
 
 /**
- * A quiet, live readout of the time where I'm actually based. Renders
- * nothing until mounted, so the server and the first client render match
- * exactly (no hydration mismatch) and nothing breaks if Intl or JS is
- * unavailable — it just never appears.
+ * A live readout of the time where I'm based. Renders nothing until mounted,
+ * so server and client markup match and nothing breaks without JS or Intl.
  */
-export function LocalTime({ timeZone, label }: { timeZone: string; label: string }) {
+export function LocalTime({ timeZone, prefix }: { timeZone: string; prefix?: string }) {
   const [time, setTime] = useState<string | null>(null);
 
   useEffect(() => {
@@ -18,7 +16,6 @@ export function LocalTime({ timeZone, label }: { timeZone: string; label: string
     } catch {
       return;
     }
-
     const tick = () => setTime(formatter.format(new Date()));
     tick();
     const id = window.setInterval(tick, 30_000);
@@ -26,11 +23,10 @@ export function LocalTime({ timeZone, label }: { timeZone: string; label: string
   }, [timeZone]);
 
   if (!time) return null;
-
   return (
     <span>
-      {label} <span aria-hidden="true">·</span> <time>{time}</time>{" "}
-      <span className="visually-hidden">local time</span>
+      {prefix}
+      <time>{time}</time> IST<span className="visually-hidden"> local time</span>
     </span>
   );
 }

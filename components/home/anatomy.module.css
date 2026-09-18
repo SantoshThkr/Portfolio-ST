@@ -1,0 +1,126 @@
+.anatomy {
+  position: relative;
+  padding-top: clamp(6rem, 16vh, 10rem);
+}
+
+.head {
+  display: grid;
+  gap: 1.25rem;
+  max-width: 38rem;
+}
+
+.steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  min-height: 78svh;
+}
+
+.card {
+  max-width: min(27rem, 40vw);
+  padding: 1.75rem 0;
+  transition:
+    opacity 500ms var(--ease-out),
+    transform 500ms var(--ease-out);
+}
+
+/* Once the director is running, the step in the middle of the screen is lit
+   and the rest recede. Without JS every step stays fully visible. */
+.anatomy[data-active-step] .step:not([data-current]) .card {
+  opacity: 0.22;
+  transform: translateX(-6px);
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  font-family: var(--font-mono);
+  font-stretch: 87.5%;
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.num {
+  display: inline-grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  color: var(--ink);
+  letter-spacing: 0;
+  transition:
+    border-color 400ms ease,
+    background-color 400ms ease,
+    color 400ms ease;
+}
+
+.step[data-current] .num {
+  border-color: var(--signal);
+  background: var(--signal);
+  color: #140a03;
+}
+
+.title {
+  margin-top: 1.25rem;
+  font-size: var(--text-xl);
+  font-stretch: 112%;
+  font-weight: 560;
+  letter-spacing: -0.02em;
+}
+
+.body {
+  margin-top: 0.9rem;
+  color: var(--ink-2);
+  line-height: 1.65;
+}
+
+.seen {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 0.75rem;
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+  font-size: var(--text-sm);
+  color: var(--ink);
+}
+
+@media (max-width: 56rem) {
+  /* Stack above, captions below: each card sits in the lower part of the
+     screen on a solid ground so it reads over the scene. */
+  .step {
+    align-items: flex-end;
+    min-height: 92svh;
+    padding-bottom: 6svh;
+  }
+
+  .card {
+    max-width: none;
+    padding: 1.25rem;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    background: rgb(11 12 14 / 0.86);
+    backdrop-filter: blur(8px);
+  }
+
+  .anatomy[data-active-step] .step:not([data-current]) .card {
+    transform: none;
+  }
+}
+
+
+@media (max-width: 56rem) {
+  .card {
+    max-width: none;
+  }
+}

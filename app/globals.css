@@ -1,55 +1,45 @@
-/* ---------- Tokens ---------- */
+/* =========================================================================
+   Tokens
+   Graphite and warm off-white, with one signal colour — amber, the colour of
+   instrumentation rather than of "AI". Dark by design: the site is built
+   around a lit object in a dark room. Every text token clears WCAG AA.
+   ========================================================================= */
 :root {
-  color-scheme: light dark;
+  color-scheme: dark;
 
-  --paper: #f5f6f4;
-  --surface: #ffffff;
-  --ink: #13233a;
-  --ink-2: #4b5870;
-  --ink-3: #7c869a;
-  --rule: #d6dae0;
-  --rule-strong: #a9b1be;
-  --accent: #2f3fe4;
-  --accent-strong: #1f2ab8;
-  --accent-soft: #e7e9fd;
+  --bg: #0b0c0e;
+  --bg-raised: #121417;
+  --ink: #ede9e3;
+  --ink-2: #aaa49b;
+  --ink-3: #8c867d;
+  --line: rgb(237 233 227 / 0.1);
+  --line-strong: rgb(237 233 227 / 0.2);
+  --signal: #ff8a3d;
+  --signal-soft: rgb(255 138 61 / 0.12);
 
-  --font-body: var(--font-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-voice: var(--font-sans-italic), var(--font-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-code: var(--font-mono), ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: var(--font-martian), ui-monospace, "SFMono-Regular", Menlo, monospace;
 
-  --step--1: 0.875rem;
-  --step-0: 1.0625rem;
-  --step-1: 1.25rem;
-  --step-2: 1.5625rem;
-  --step-3: clamp(1.75rem, 1.4rem + 1.2vw, 2.25rem);
-  --step-4: clamp(2.125rem, 1.4rem + 3vw, 3.75rem);
+  --text-sm: 0.875rem;
+  --text-base: 1.0625rem;
+  --text-lg: clamp(1.125rem, 1.05rem + 0.35vw, 1.3125rem);
+  --text-xl: clamp(1.375rem, 1.2rem + 0.8vw, 1.875rem);
+  --text-2xl: clamp(2rem, 1.35rem + 2.6vw, 3.75rem);
+  --text-3xl: clamp(2.6rem, 1.4rem + 5.2vw, 6.25rem);
 
-  --gutter: clamp(1.25rem, 4vw, 3rem);
-  --max: 76rem;
-  --measure: 66ch;
-  --radius: 6px;
-  --header-h: 4rem;
+  --gutter: clamp(1.25rem, 4vw, 3.5rem);
+  --max: 88rem;
+  --measure: 62ch;
+  --header-h: 4.25rem;
+  --radius: 3px;
 
   --ease-out: cubic-bezier(0.16, 0.8, 0.24, 1);
-  --duration-base: 550ms;
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --paper: #0e1522;
-    --surface: #141d2d;
-    --ink: #e7ebf2;
-    --ink-2: #a3aec2;
-    --ink-3: #6e7996;
-    --rule: #253146;
-    --rule-strong: #40506d;
-    --accent: #9ea8ff;
-    --accent-strong: #c3caff;
-    --accent-soft: #1d2652;
-  }
-}
-
-/* ---------- Base ---------- */
+/* =========================================================================
+   Base
+   ========================================================================= */
 *,
 *::before,
 *::after {
@@ -59,7 +49,8 @@
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
-  scroll-padding-top: calc(var(--header-h) + 1.5rem);
+  scroll-padding-top: calc(var(--header-h) + 1rem);
+  background: var(--bg);
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -71,16 +62,47 @@ html {
 body {
   margin: 0;
   min-width: 20rem;
-  background: var(--paper);
+  /* No background here on purpose: <html> carries it, so the fixed light and
+     grain layers below (z-index -1) paint above it instead of under it. */
   color: var(--ink);
-  font-family: var(--font-body);
-  font-size: var(--step-0);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
   line-height: 1.6;
-  font-feature-settings: "ss01", "cv11";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-wrap: break-word;
   overflow-x: clip;
+}
+
+/* A warm pool of light where the stack sits, and a whisper of film grain so
+   the dark gradients don't band. Both static, both behind everything. */
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+
+body::before {
+  background:
+    radial-gradient(52rem 38rem at 76% 38%, rgb(255 138 61 / 0.055), transparent 70%),
+    radial-gradient(70rem 50rem at 10% 110%, rgb(120 130 150 / 0.05), transparent 70%);
+}
+
+body::after {
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+main {
+  position: relative;
+  z-index: 1;
+}
+
+main:focus {
+  outline: none;
 }
 
 h1,
@@ -88,8 +110,8 @@ h2,
 h3,
 h4 {
   margin: 0;
-  font-weight: 650;
-  line-height: 1.15;
+  font-weight: 560;
+  line-height: 1.08;
   letter-spacing: -0.02em;
   text-wrap: balance;
 }
@@ -99,7 +121,8 @@ ul,
 ol,
 dl,
 dd,
-figure {
+figure,
+blockquote {
   margin: 0;
 }
 
@@ -116,36 +139,39 @@ ol[role="list"] {
 a {
   color: inherit;
   text-decoration-thickness: 1px;
-  text-underline-offset: 0.2em;
+  text-underline-offset: 0.22em;
 }
 
 a:hover {
-  color: var(--accent);
+  color: var(--signal);
 }
 
 code {
-  font-family: var(--font-code);
-  font-size: 0.88em;
+  font-family: var(--font-mono);
+  font-size: 0.86em;
 }
 
 img,
-svg {
+svg,
+canvas {
   display: block;
   max-width: 100%;
 }
 
 ::selection {
-  background: var(--accent);
-  color: var(--paper);
+  background: var(--signal);
+  color: var(--bg);
 }
 
 :focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--signal);
   outline-offset: 3px;
   border-radius: 2px;
 }
 
-/* ---------- Utilities ---------- */
+/* =========================================================================
+   Utilities
+   ========================================================================= */
 .container {
   width: 100%;
   max-width: var(--max);
@@ -166,15 +192,16 @@ svg {
 }
 
 .skip-link {
-  position: absolute;
+  position: fixed;
   left: var(--gutter);
   top: 0.75rem;
   z-index: 100;
-  padding: 0.6rem 1rem;
-  background: var(--ink);
-  color: var(--paper);
+  padding: 0.7rem 1rem;
+  background: var(--signal);
+  color: var(--bg);
   border-radius: var(--radius);
   font-weight: 600;
+  text-decoration: none;
   transform: translateY(-200%);
 }
 
@@ -186,118 +213,132 @@ svg {
   color: var(--ink-2);
 }
 
-/* An italic cut of the display face, reserved for a small number of
-   editorial moments (case-study pull quotes). Used sparingly on purpose. */
-.voice {
-  font-family: var(--font-voice);
-  font-style: italic;
-  font-weight: 460;
-}
-
-/* The mono, tracked-out label that opens every major section: a small,
-   consistent wayfinding device that reads like a document's running index. */
+/* The running index that opens every chapter: "02 / Work". */
 .eyebrow {
   display: flex;
   align-items: center;
-  gap: 0.55rem;
-  margin-bottom: 0.85rem;
-  font-family: var(--font-code);
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.09em;
+  gap: 0.75rem;
+  font-family: var(--font-mono);
+  font-stretch: 87.5%;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--ink-2);
 }
 
-.eyebrow::before {
+.eyebrow b {
+  font-weight: 500;
+  color: var(--signal);
+}
+
+.eyebrow::after {
   content: "";
-  width: 1.25rem;
+  flex: 0 1 4rem;
   height: 1px;
-  background: var(--accent);
-  flex-shrink: 0;
+  background: var(--line-strong);
 }
 
-/* Section with a title rail on wide screens. */
-.section {
-  padding-block: clamp(3.5rem, 8vw, 6.5rem);
-  border-top: 1px solid var(--rule);
+.display {
+  font-stretch: 125%;
+  font-weight: 560;
+  letter-spacing: -0.035em;
+  line-height: 0.98;
 }
 
-.section-grid {
-  display: grid;
-  gap: 1.75rem;
+.section-title {
+  font-size: var(--text-2xl);
+  font-stretch: 118%;
+  font-weight: 540;
+  letter-spacing: -0.03em;
+  line-height: 1;
 }
 
-/* Grid children default to min-width: auto, which lets wide content
-   (tables, long identifiers) widen the page instead of scrolling. */
-.section-grid > * {
-  min-width: 0;
-}
-
-@media (min-width: 60rem) {
-  .section-grid {
-    grid-template-columns: 13rem minmax(0, 1fr);
-    gap: 3rem;
-  }
-
-  .section-title {
-    position: sticky;
-    top: calc(var(--header-h) + 2rem);
-    align-self: start;
-  }
-}
-
-.section-title h2 {
-  font-size: var(--step-2);
-}
-
-.section-title p {
-  margin-top: 0.5rem;
+.lede {
+  max-width: 44ch;
+  font-size: var(--text-lg);
+  line-height: 1.5;
   color: var(--ink-2);
-  font-size: var(--step--1);
-  max-width: 30ch;
 }
 
-/* Buttons and link styles shared across pages. */
+.label {
+  font-family: var(--font-mono);
+  font-stretch: 87.5%;
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+/* Buttons: squared-off and quiet, like controls on an instrument. */
 .button {
+  position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  min-height: 2.75rem;
-  padding: 0.6rem 1.1rem;
-  border: 1px solid var(--ink);
+  gap: 0.75rem;
+  min-height: 3rem;
+  padding: 0.75rem 1.25rem;
+  border: 1px solid var(--line-strong);
   border-radius: var(--radius);
-  font-weight: 600;
-  font-size: var(--step--1);
+  font-size: var(--text-sm);
+  font-weight: 560;
+  letter-spacing: 0.01em;
   text-decoration: none;
-  transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease, transform 150ms var(--ease-out);
+  color: var(--ink);
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease,
+    color 200ms ease;
 }
 
-.button:active {
-  transform: translateY(1px);
+/* Arrows are drawn with masks, not glyphs: font fallbacks rendered the
+   diagonal arrow small and off-baseline. */
+.button::after {
+  content: "";
+  width: 0.95em;
+  height: 0.95em;
+  flex-shrink: 0;
+  background: currentColor;
+  -webkit-mask: var(--arrow) center / contain no-repeat;
+  mask: var(--arrow) center / contain no-repeat;
+  transition: transform 260ms var(--ease-out);
+  --arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23000' stroke-width='1.4'%3E%3Cpath d='M1.5 8h12M9 3.5 13.5 8 9 12.5'/%3E%3C/svg%3E");
+}
+
+.button:hover {
+  color: var(--ink);
+  border-color: var(--ink-2);
+}
+
+.button:hover::after {
+  transform: translateX(3px);
 }
 
 .button-primary {
-  background: var(--ink);
-  color: var(--paper);
+  background: var(--signal);
+  border-color: var(--signal);
+  color: #140a03;
 }
 
 .button-primary:hover {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: var(--paper);
-  transform: translateY(-1px);
+  background: #ffa066;
+  border-color: #ffa066;
+  color: #140a03;
 }
 
-.button-secondary:hover {
-  border-color: var(--accent);
-  transform: translateY(-1px);
+.button[data-external]::after {
+  --arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23000' stroke-width='1.4'%3E%3Cpath d='M4 12 12 4M5.5 4H12v6.5'/%3E%3C/svg%3E");
+}
+
+.button[data-external]:hover::after {
+  transform: translate(2px, -2px);
 }
 
 .text-link {
-  font-weight: 600;
+  font-weight: 560;
   text-decoration: underline;
-  text-decoration-color: var(--rule-strong);
+  text-decoration-color: var(--line-strong);
+  transition: text-decoration-color 200ms ease;
 }
 
 .text-link:hover {
@@ -307,51 +348,66 @@ svg {
 .tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.375rem 1rem;
+  gap: 0.4rem;
   padding: 0;
   list-style: none;
-  font-family: var(--font-code);
-  font-size: 0.8125rem;
+}
+
+.tags li {
+  padding: 0.3rem 0.55rem;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  font-family: var(--font-mono);
+  font-stretch: 87.5%;
+  font-size: 0.6875rem;
+  letter-spacing: 0.02em;
   color: var(--ink-2);
 }
 
-/* ---------- Scroll reveal ---------- */
-/* Default state is fully visible: content must never depend on JS to be
-   seen. A tiny inline script in <body> (see layout.tsx) adds `reveal-armed`
-   to <html> before first paint, but only when JS runs AND the OS has not
-   asked for reduced motion — so the hidden-then-revealed state only ever
-   exists for visitors who can actually see the reveal happen. */
-/* Declared on the plain `.reveal` class (not the higher-specificity
-   `:root.reveal-armed .reveal` below) so a component that also needs its
-   own hover transition — see .entry in project-entry.module.css — can
-   win the cascade with one merged, higher-specificity `transition` list
-   instead of silently losing this one outright (transition doesn't merge
-   across rules; whichever rule's shorthand wins applies in full). */
-.reveal {
-  transition: opacity var(--duration-base) var(--ease-out), transform var(--duration-base) var(--ease-out);
-  transition-delay: var(--reveal-delay, 0ms);
-}
-
-:root.reveal-armed .reveal {
+/* =========================================================================
+   Motion
+   Content is visible by default. The inline script in layout.tsx adds
+   `motion-ok` to <html> before first paint only when JS runs and the visitor
+   hasn't asked for reduced motion — so a hidden starting state can only
+   exist for someone who will actually see it animate in.
+   ========================================================================= */
+.motion-ok [data-reveal] {
   opacity: 0;
-  transform: translateY(14px);
+  transform: translateY(18px);
+  transition:
+    opacity 900ms var(--ease-out),
+    transform 900ms var(--ease-out);
+  transition-delay: calc(var(--i, 0) * 80ms);
 }
 
-:root.reveal-armed .reveal[data-visible="true"] {
+.motion-ok [data-reveal].is-in {
   opacity: 1;
   transform: none;
 }
 
-/* ---------- Scroll progress ---------- */
-/* Pure CSS, no scroll listener: driven by the scroll-timeline spec where
-   supported, invisible (not just static) everywhere else. */
+/* Route transitions: the canvas persists across pages (see SceneRoot);
+   the document content settles in on every navigation. */
+@media (prefers-reduced-motion: no-preference) {
+  .route[data-animate] {
+    animation: route-in 700ms var(--ease-out) both;
+  }
+}
+
+@keyframes route-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+/* Reading progress along the top edge — scroll-driven CSS, no JS. */
 .scroll-progress {
   display: none;
   position: fixed;
   inset: 0 0 auto 0;
   height: 2px;
   z-index: 70;
-  background: var(--accent);
+  background: var(--signal);
   transform: scaleX(0);
   transform-origin: 0 50%;
   pointer-events: none;
@@ -361,16 +417,13 @@ svg {
   @media (prefers-reduced-motion: no-preference) {
     .scroll-progress {
       display: block;
-      animation: scroll-progress-grow linear both;
+      animation: progress-grow linear both;
       animation-timeline: scroll(root);
     }
   }
 }
 
-@keyframes scroll-progress-grow {
-  from {
-    transform: scaleX(0);
-  }
+@keyframes progress-grow {
   to {
     transform: scaleX(1);
   }
@@ -392,8 +445,10 @@ svg {
   .scroll-progress {
     display: none !important;
   }
-}
 
-main:focus {
-  outline: none;
+  body,
+  html {
+    background: #fff;
+    color: #000;
+  }
 }

@@ -1,0 +1,83 @@
+.stage {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.labels {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  overflow: hidden;
+}
+
+/* Callouts in the style of an exploded-view technical drawing: a short
+   leader from the anchor point, then a mono label. */
+.layerLabel,
+.componentLabel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-family: var(--font-mono);
+  font-stretch: 87.5%;
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--ink-2);
+  will-change: transform, opacity;
+}
+
+.layerLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: -0.5em;
+  padding-left: 3.25rem;
+}
+
+.layerLabel::before {
+  content: "";
+  position: absolute;
+  left: 0.5rem;
+  top: 50%;
+  width: 2.25rem;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.45;
+}
+
+.index {
+  color: var(--ink-3);
+}
+
+.layerLabel.active {
+  color: var(--ink);
+}
+
+.layerLabel.active .index,
+.layerLabel.active::before {
+  color: var(--signal);
+  opacity: 1;
+}
+
+.componentLabel {
+  translate: -50% -100%;
+  margin-top: -0.7rem;
+  padding: 0.2rem 0.45rem;
+  border: 1px solid color-mix(in srgb, var(--signal) 45%, transparent);
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--bg) 78%, transparent);
+  color: var(--ink);
+  font-size: 0.625rem;
+}

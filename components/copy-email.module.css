@@ -6,15 +6,32 @@
 }
 
 .button {
+  min-height: 3rem;
+  min-width: 9.5rem;
+  padding: 0.75rem 1.25rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
   background: transparent;
-  color: inherit;
-  font-family: inherit;
+  color: var(--ink);
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 560;
   cursor: pointer;
-  min-width: 11.5rem;
-  justify-content: center;
+  transition:
+    border-color 200ms ease,
+    color 200ms ease;
+}
+
+.button:hover {
+  border-color: var(--ink-2);
+}
+
+.button[data-status="copied"] {
+  border-color: var(--signal);
+  color: var(--signal);
 }
 
 .status {
-  font-size: var(--step--1);
+  font-size: var(--text-sm);
   color: var(--ink-2);
 }

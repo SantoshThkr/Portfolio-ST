@@ -1,30 +1,23 @@
 import localFont from "next/font/local";
 
-// Self-hosted from @fontsource packages: no third-party font request,
-// no build-time network dependency, and Next generates size-adjusted fallbacks.
+// Self-hosted from @fontsource: no third-party font request and no build-time
+// network dependency. One Archivo file covers both the expanded display cut
+// and the normal-width text cut through its width axis.
 export const sans = localFont({
-  src: "../node_modules/@fontsource-variable/schibsted-grotesk/files/schibsted-grotesk-latin-wght-normal.woff2",
-  variable: "--font-sans",
-  weight: "400 900",
+  src: "../node_modules/@fontsource-variable/archivo/files/archivo-latin-standard-normal.woff2",
+  variable: "--font-archivo",
+  weight: "100 900",
   display: "swap",
-});
-
-// The italic cut of the same family, used sparingly for a handful of
-// editorial moments (case-study pull quotes). Not preloaded — it only
-// costs a request on pages that actually render `.voice` text.
-export const sansItalic = localFont({
-  src: "../node_modules/@fontsource-variable/schibsted-grotesk/files/schibsted-grotesk-latin-wght-italic.woff2",
-  variable: "--font-sans-italic",
-  weight: "400 900",
-  style: "italic",
-  display: "swap",
-  preload: false,
+  declarations: [{ prop: "font-stretch", value: "62% 125%" }],
 });
 
 export const mono = localFont({
-  src: "../node_modules/@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2",
-  variable: "--font-mono",
+  src: "../node_modules/@fontsource-variable/martian-mono/files/martian-mono-latin-standard-normal.woff2",
+  variable: "--font-martian",
   weight: "100 800",
   display: "swap",
+  // Not preloaded: it only sets small labels, so a brief swap is cheap, and
+  // keeping it off the critical path keeps first paint lean.
   preload: false,
+  declarations: [{ prop: "font-stretch", value: "75% 112.5%" }],
 });

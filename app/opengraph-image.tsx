@@ -7,8 +7,8 @@ export const contentType = "image/png";
 
 export default function Image() {
   return ogCard({
-    kicker: "Full-stack AI engineer, Noida",
+    kicker: "Full-stack AI engineer · Noida",
     title: site.name,
-    subtitle: "AI applications end to end: React interfaces, APIs, retrieval pipelines and the model calls between them.",
+    subtitle: "AI products, engineered through every layer.",
   });
 }

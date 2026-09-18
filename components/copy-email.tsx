@@ -31,8 +31,8 @@ export function CopyEmail({ email }: { email: string }) {
 
   return (
     <span className={styles.wrap}>
-      <button type="button" className={`button button-secondary ${styles.button}`} onClick={copy}>
-        {status === "copied" ? "Copied" : "Copy email address"}
+      <button type="button" className={styles.button} onClick={copy} data-status={status}>
+        {status === "copied" ? "Copied" : "Copy address"}
       </button>
       <span role="status" className={styles.status}>
         {messages[status]}
